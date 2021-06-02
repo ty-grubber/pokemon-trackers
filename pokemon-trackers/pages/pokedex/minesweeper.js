@@ -7,8 +7,19 @@ export default function Minesweeper() {
     <Layout>
       <Head>
         <title>Pokedex Minesweeper</title>
+        <meta
+          name="description"
+          content="Play Minesweeper using the pokedex as the mining grid"
+        />
+        <meta name="og:title" content="Pokedex Minesweeper" />
       </Head>
-      <h1>Minesweeper</h1>
+
+      <header className={cx('header')}>
+        <h1>Minesweeper</h1>
+      </header>
+      <section>
+
+      </section>
       <h2>
         <Link href="/">
           <a>Back to home</a>

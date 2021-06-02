@@ -1,7 +1,7 @@
 import classnames from 'classnames/bind';
 import Head from 'next/head';
-import styles from './layout.module.css';
 import Link from 'next/link';
+import styles from './Layout.module.css';
 
 const cx = classnames.bind(styles);
 

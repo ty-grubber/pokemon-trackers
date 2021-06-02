@@ -2,7 +2,7 @@ import classnames from 'classnames/bind';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import Layout from '../../components/layout';
+import Layout from '../../components/Layout';
 import utilStyles from '../../styles/utils.module.css';
 import styles from './HomePage.module.css';
 
@@ -40,6 +40,10 @@ export default function HomePage() {
         <h2>Pokemon Crystal Item Trackers</h2>
         <Link href="/items/crystal/fir">
           <a>Full Item Tracker</a>
+        </Link>
+        <br />
+        <Link href="/items/crystal/kir">
+          <a>Key Item Tracker</a>
         </Link>
       </section>
     </Layout>

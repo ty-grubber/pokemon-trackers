@@ -1,5 +1,6 @@
 import classnames from 'classnames/bind';
 import Head from 'next/head';
+import React from 'react';
 import Layout from '../../components/Layout';
 import UnderConstruction from '../UnderConstruction';
 import styles from './FIRTrackerPage.module.css';

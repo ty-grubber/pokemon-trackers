@@ -1,6 +1,7 @@
 import classnames from 'classnames/bind';
 import Head from 'next/head';
 import Layout from '../../../components/Layout';
+import UnderConstruction from '../../UnderConstruction';
 import styles from './PDMinesweeperPage.module.css';
 
 const cx = classnames.bind(styles);
@@ -21,7 +22,7 @@ export default function Minesweeper() {
         <h1>Pokedex Minesweeper</h1>
       </header>
       <section>
-        Minesweeper content here
+        <UnderConstruction />
       </section>
     </Layout>
   )

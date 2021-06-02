@@ -32,9 +32,14 @@ export default function HomePage() {
         <h1 className={ucx('heading2Xl')}>Pokemon Trackers</h1>
       </header>
       <section className={ucx('headingMd')}>
-        <h1>Pokedex Trackers</h1>
+        <h2>Pokedex Trackers</h2>
         <Link href="/pokedex/minesweeper">
           <a>Minesweeper</a>
+        </Link>
+        <br />
+        <h2>Pokemon Crystal Item Trackers</h2>
+        <Link href="/items/crystal/fir">
+          <a>Full Item Tracker</a>
         </Link>
       </section>
     </Layout>

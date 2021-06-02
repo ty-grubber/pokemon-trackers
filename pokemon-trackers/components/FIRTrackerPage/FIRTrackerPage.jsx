@@ -19,7 +19,7 @@ export default function FIRTrackerPage() {
         <meta name="og:title" content="Pokemon Crystal FIR Tracker" />
       </Head>
 
-      <header>
+      <header className={cx('header')}>
         <h1>Pokemon Crystal FIR Tracker</h1>
       </header>
       <section>

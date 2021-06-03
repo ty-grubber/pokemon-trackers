@@ -1,5 +1,6 @@
 import classnames from 'classnames/bind';
 import Head from 'next/head';
+import React from 'react';
 import Layout from '../../components/Layout';
 import UnderConstruction from '../UnderConstruction';
 import styles from './KIRTrackerPage.module.css';
@@ -18,7 +19,7 @@ export default function KIRTrackerPage() {
         <meta name="og:title" content="Pokemon Crystal FIR Tracker" />
       </Head>
 
-      <header>
+      <header className={cx('header')}>
         <h1>Pokemon Crystal KIR Tracker</h1>
       </header>
       <section>

@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-css-modules"
+  ],
+  "rules": {
+    "no-descending-specificity": [
+      true,
+      {
+        "severity": "warning"
+      }
+    ]
+  }
+}

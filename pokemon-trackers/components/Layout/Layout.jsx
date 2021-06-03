@@ -1,7 +1,9 @@
 import classnames from 'classnames/bind';
 import Head from 'next/head';
 import Link from 'next/link';
+import React from 'react';
 import styles from './Layout.module.css';
+import PropTypes from 'prop-types';
 
 const cx = classnames.bind(styles);
 
@@ -21,4 +23,14 @@ export default function Layout({ children, home }) {
       )}
     </div>
   )
+}
+
+Layout.propTypes = {
+  children: PropTypes.node,
+  home: PropTypes.bool,
+}
+
+Layout.defaultProps = {
+  children: null,
+  home: false,
 }

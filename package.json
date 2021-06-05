@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:js": "eslint . --ext js,jsx --config .eslintrc.json",
-    "lint:css": "stylelint '**/*.css'"
+    "lint:css": "stylelint '**/*.css'",
+    "prepare": "husky install"
   },
   "dependencies": {
     "classnames": "^2.3.1",
@@ -22,6 +23,7 @@
     "eslint-plugin-react": "^7.24.0",
     "stylelint": "^13.13.1",
     "stylelint-config-css-modules": "^2.2.0",
-    "stylelint-config-standard": "^22.0.0"
+    "stylelint-config-standard": "^22.0.0",
+    "husky": "^6.0.0"
   }
 }

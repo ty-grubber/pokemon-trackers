@@ -34,6 +34,7 @@ export default function Minesweeper() {
               <Image
                 alt={`${pokemon.name}`}
                 src={`https://img.pokemondb.net/sprites/gold/normal/${pokemon.name.toLowerCase()}.png`}
+                title={`${pokemon.name}`}
                 width={25}
                 height={25}
                 />

@@ -12,6 +12,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@emotion/babel-preset-css-prop": "^11.2.0",
+    "@emotion/react": "^11.4.0",
     "classnames": "^2.3.1",
     "next": "^10.0.0",
     "prop-types": "^15.7.2",

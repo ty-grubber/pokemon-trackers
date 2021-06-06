@@ -1,8 +1,0 @@
-.gridContainer {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.gridChild {
-  flex-grow: 1;
-}

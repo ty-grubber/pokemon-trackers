@@ -1,29 +1,34 @@
-import classnames from 'classnames/bind';
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './Grid.module.css';
+import Cell from './Cell';
+import { css } from '@emotion/react';
 
-const cx = classnames.bind(styles);
+function Grid({ className, columns, ...rest }) {
+  const gridContainerStyles = css`
+    display: flex;
+    flex-wrap: wrap;
 
-export default function Grid({ children, className, columns }) {
+    & > * {
+      width: calc(100% / ${columns});
+    }
+`
+
   return (
-    <div className={cx('gridContainer', className)}>
-      {children?.map(child => (
-        <div key={child.key} className={cx('gridChild')} style={{ width: `calc(100% / ${columns})` }}>
-          {child}
-        </div>
-      ))}
-    </div>
+    <div css={gridContainerStyles} className={className} {...rest} />
   );
 }
 
 Grid.propTypes = {
-  children: PropTypes.node,
   className: PropTypes.string,
   columns: PropTypes.number.isRequired,
 }
 
 Grid.defaultProps = {
-  children: undefined,
   className: undefined,
 }
+
+const DexGrid = React.memo(Grid);
+
+DexGrid.Cell = Cell;
+
+export default DexGrid;

@@ -5,10 +5,10 @@ import styles from './Grid.module.css';
 
 const cx = classnames.bind(styles);
 
-export default function Grid({ className, columns }) {
+export default function Grid({ children, className, columns }) {
   return (
     <div className={cx('gridContainer', className)}>
-      {React.Children.map(child => (
+      {children?.map(child => (
         <div key={child.key} className={cx('gridChild')} style={{ width: `calc(100% / ${columns})` }}>
           {child}
         </div>
@@ -18,10 +18,12 @@ export default function Grid({ className, columns }) {
 }
 
 Grid.propTypes = {
+  children: PropTypes.node,
   className: PropTypes.string,
   columns: PropTypes.number.isRequired,
 }
 
 Grid.defaultProps = {
+  children: undefined,
   className: undefined,
 }

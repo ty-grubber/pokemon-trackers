@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import React from 'react';
 import Layout from '../../Layout';
-import { GEN2 } from '../../../lib/constants/pokedex.js';
+import { NATIONAL_DEX } from '../../../lib/constants/pokedex.js';
 import Grid from '../../Grid';
 import UnderConstruction from '../../UnderConstruction';
 import styles from './BasicTrackerPage.module.css';
@@ -28,15 +28,15 @@ export default function BasicTracker() {
       <section>
         <UnderConstruction />
 
-        <Grid className={cx('pokedexGrid')} columns={4}>
-          {GEN2.map(pokemon => (
+        <Grid className={cx('pokedexGrid')} columns={20}>
+          {NATIONAL_DEX.map(pokemon => (
             <Grid.Cell key={pokemon.id}>
               <Image
                 alt={`${pokemon.name}`}
-                src={`https://img.pokemondb.net/sprites/gold/normal/${pokemon.name.toLowerCase()}.png`}
+                src={`https://img.pokemondb.net/sprites/gold/normal/${pokemon.imageName || pokemon.name.toLowerCase()}.png`}
                 title={`${pokemon.name}`}
-                width={25}
-                height={25}
+                width={50}
+                height={50}
                 />
             </Grid.Cell>
           ))}

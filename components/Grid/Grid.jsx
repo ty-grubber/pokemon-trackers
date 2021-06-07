@@ -9,7 +9,7 @@ function Grid({ className, columns, ...rest }) {
     flex-wrap: wrap;
 
     & > * {
-      width: calc(100% / ${columns});
+      max-width: calc(100% / ${columns});
     }
 `
 

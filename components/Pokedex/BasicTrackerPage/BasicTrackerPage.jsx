@@ -33,7 +33,7 @@ export default function BasicTracker() {
             <Grid.Cell key={pokemon.id}>
               <Image
                 alt={`${pokemon.name}`}
-                src={`https://img.pokemondb.net/sprites/gold/normal/${pokemon.imageName || pokemon.name.toLowerCase()}.png`}
+                src={`https://www.serebii.net/pokearth/sprites/gold/${pokemon.id.toString().padStart(3, '0')}.png`}
                 title={`${pokemon.name}`}
                 width={50}
                 height={50}

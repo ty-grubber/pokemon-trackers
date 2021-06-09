@@ -29,14 +29,17 @@ export default function BasicTracker() {
         <UnderConstruction />
 
         <Grid className={cx('pokedexGrid')} columns={20}>
-          {NATIONAL_DEX.map(pokemon => (
-            <Grid.Cell key={pokemon.id}>
+          {NATIONAL_DEX.map(({ id, name }) => (
+            <Grid.Cell
+              key={id}
+            >
               <Image
-                alt={`${pokemon.name}`}
-                src={`https://www.serebii.net/pokearth/sprites/gold/${pokemon.id.toString().padStart(3, '0')}.png`}
-                title={`${pokemon.name}`}
-                width={50}
+                alt={`${name}`}
                 height={50}
+                priority
+                src={`/images/pokemon/${id}.png`}
+                title={`${name}`}
+                width={50}
                 />
             </Grid.Cell>
           ))}

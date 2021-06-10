@@ -15,23 +15,28 @@ export default function Cell({
   maxHeight,
   onLeftClick,
   onRightClick,
+  trackClicks,
   ...rest
 }) {
   const [clickValue, setClickValue] = useState(2);
   const cellStyles = css`
     background-color: ${bgColors[clickValue]};
-    max-height: ${maxHeight}px;
+    max-height: ${maxHeight};
     flex-grow: 1;
 `
   const handleClick = useCallback((e) => {
-    setClickValue(clickValue => Math.min(clickValue + 1, bgColors.length - 1));
-    onLeftClick(e);
+    if (trackClicks) {
+      setClickValue(clickValue => Math.min(clickValue + 1, bgColors.length - 1));
+      onLeftClick(e);
+    }
   }, []);
 
   const handleContextMenu = useCallback((e) => {
-    e.preventDefault();
-    setClickValue(clickValue => Math.max(clickValue - 1, 0));
-    onRightClick(e);
+    if (trackClicks) {
+      e.preventDefault();
+      setClickValue(clickValue => Math.max(clickValue - 1, 0));
+      onRightClick(e);
+    }
   }, [])
 
   return (
@@ -41,14 +46,16 @@ export default function Cell({
 
 Cell.propTypes = {
   className: PropTypes.string,
-  maxHeight: PropTypes.number,
+  maxHeight: PropTypes.string,
   onLeftClick: PropTypes.func,
   onRightClick: PropTypes.func,
+  trackClicks: PropTypes.bool,
 }
 
 Cell.defaultProps = {
   className: undefined,
-  maxHeight: 50,
+  maxHeight: 'auto',
   onLeftClick: () => { },
   onRightClick: () => { },
+  trackClicks: false,
 }

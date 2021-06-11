@@ -2,23 +2,17 @@ import { css } from '@emotion/react';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
-const bgColors = [
-  '#0f0',
-  '#00f',
-  '#fff',
-  '#000',
-  '#f00',
-];
-
 export default function Cell({
+  bgColors,
   className,
+  defaultClickValue,
   maxHeight,
   onLeftClick,
   onRightClick,
   trackClicks,
   ...rest
 }) {
-  const [clickValue, setClickValue] = useState(2);
+  const [clickValue, setClickValue] = useState(defaultClickValue);
   const cellStyles = css`
     background-color: ${bgColors[clickValue]};
     max-height: ${maxHeight};
@@ -51,7 +45,9 @@ export default function Cell({
 }
 
 Cell.propTypes = {
+  bgColors: PropTypes.arrayOf(PropTypes.string),
   className: PropTypes.string,
+  defaultClickValue: PropTypes.number,
   maxHeight: PropTypes.string,
   onLeftClick: PropTypes.func,
   onRightClick: PropTypes.func,
@@ -59,7 +55,9 @@ Cell.propTypes = {
 }
 
 Cell.defaultProps = {
+  bgColors: ['#0f0','#00f','#fff','#000','#f00'],
   className: undefined,
+  defaultClickValue: 2,
   maxHeight: 'auto',
   onLeftClick: () => { },
   onRightClick: () => { },

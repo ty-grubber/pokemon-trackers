@@ -1,0 +1,20 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.trackerGrid > .pokedexContainer {
+  max-width: unset;
+  width: 66%;
+}
+
+.trackerGrid > .trackerContainer {
+  max-width: unset;
+  width: 34%;
+}
+
+.pokedexGrid {
+  margin: 1rem auto;
+  max-width: 800px;
+}

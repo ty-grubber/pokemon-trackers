@@ -1,7 +1,7 @@
 import classnames from 'classnames/bind';
 import Head from 'next/head';
 import Image from 'next/image';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import Layout from '../../Layout';
 import { NATIONAL_DEX } from '../../../lib/constants/pokedex.js';
 import Grid from '../../Grid';
@@ -9,7 +9,36 @@ import styles from './BasicTrackerPage.module.css';
 
 const cx = classnames.bind(styles);
 
+const DEFAULT_TRACKED_VALUES = {
+  0: 0,
+  1: 0,
+  2: NATIONAL_DEX.length,
+  3: 0,
+  4: 0,
+};
+
 export default function BasicTracker() {
+  const [clickedValues, setClickedValues] = useState(DEFAULT_TRACKED_VALUES);
+
+  const handleClick = useCallback((newValue, oldValue) => {
+    const test = {
+      ...clickedValues,
+      [newValue]: clickedValues[newValue] + 1,
+    };
+
+    if (newValue !== oldValue && test) {
+      setClickedValues(currentSet => ({
+        ...currentSet,
+        [newValue]: currentSet[newValue] + 1,
+        [oldValue]: currentSet[oldValue] - 1,
+      }));
+    }
+  });
+
+  const caughtCount = clickedValues[3] + clickedValues[4];
+  const trackedCount = clickedValues[0] + clickedValues[1];
+  const untrackedCount = clickedValues[2];
+
   return (
     <Layout>
       <Head>
@@ -28,6 +57,8 @@ export default function BasicTracker() {
                 <Grid.Cell
                   key={id}
                   maxHeight="40px"
+                  onLeftClick={handleClick}
+                  onRightClick={handleClick}
                   trackClicks
                 >
                   <Image
@@ -47,9 +78,9 @@ export default function BasicTracker() {
               <h1>Pokedex Tracker</h1>
             </header>
             <div className={cx('countContainer')}>
-              <b>Total Caught: </b> 0<br />
-              <b>Total Tracked: </b> 0<br />
-              <b>Total Untracked: </b> 0<br />
+              <b>Total Caught: </b> {caughtCount}<br />
+              <b>Total Tracked: </b> {trackedCount}<br />
+              <b>Total Untracked: </b> {untrackedCount}<br />
             </div>
           </Grid.Cell>
         </Grid>

@@ -24,18 +24,24 @@ export default function Cell({
     max-height: ${maxHeight};
     flex-grow: 1;
 `
-  const handleClick = useCallback((e) => {
+  const handleClick = useCallback(() => {
     if (trackClicks) {
-      setClickValue(clickValue => Math.min(clickValue + 1, bgColors.length - 1));
-      onLeftClick(e);
+      setClickValue(currentValue => {
+        const newValue = Math.min(currentValue + 1, bgColors.length - 1);
+        onLeftClick(newValue, currentValue);
+        return newValue;
+      })
     }
   }, []);
 
   const handleContextMenu = useCallback((e) => {
     if (trackClicks) {
       e.preventDefault();
-      setClickValue(clickValue => Math.max(clickValue - 1, 0));
-      onRightClick(e);
+      setClickValue(currentValue => {
+        const newValue = Math.max(currentValue - 1, 0);
+        onRightClick(newValue, currentValue);
+        return newValue;
+      })
     }
   }, [])
 

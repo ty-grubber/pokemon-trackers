@@ -1,5 +1,5 @@
 import React from 'react';
-import MinesweeperPage from '../../components/Pokedex/MinesweeperPage';
+import MinesweeperPage from '../../views/Pokedex/MinesweeperPage';
 
 export default function Minesweeper() {
   return <MinesweeperPage />

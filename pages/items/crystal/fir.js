@@ -1,5 +1,5 @@
 import React from 'react';
-import FIRTrackerPage from "../../../components/FIRTrackerPage";
+import FIRTrackerPage from "../../../views/FIRTrackerPage";
 
 export default function FIR() {
   return <FIRTrackerPage />

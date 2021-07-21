@@ -1,0 +1,33 @@
+.pokedexGrid,
+.randomizerContainer {
+  margin: 1rem auto;
+  max-width: 800px;
+}
+
+.seedInput {
+  color: purple;
+  font-family: monospace;
+  width: 200px;
+}
+
+.randomizerButton {
+  background-color: purple;
+  border: 2px solid purple;
+  border-radius: 2px;
+  color: white;
+  margin-left: 0.5rem;
+}
+
+.resetButton {
+  background-color: white;
+  border: 2px solid purple;
+  border-radius: 2px;
+  color: purple;
+  margin-left: 0.5rem;
+}
+
+.randomizerHint {
+  color: grey;
+  display: block;
+  font-size: 0.65rem;
+}

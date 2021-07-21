@@ -27,7 +27,14 @@ export default function PokedexGrid({ onCellClick }) {
       setActiveSeed(checkSeed);
       setInputSeed(checkSeed);
     }
-  }, [activeSeed, inputSeed, orderedPokedex]);
+  }, [activeSeed, inputSeed]);
+
+  const handleReset = useCallback((e) => {
+    e.preventDefault();
+    setOrderedPokedex(NATIONAL_DEX);
+    setActiveSeed('');
+    setInputSeed('');
+  })
 
   return (
     <>
@@ -55,6 +62,9 @@ export default function PokedexGrid({ onCellClick }) {
         <input id="seedInput" className={cx('seedInput')} onChange={handleSeedChange} value={inputSeed} maxLength="22" />
         <button className={cx('randomizerButton')} onClick={handleRandomize} type="button">
           Randomize
+        </button>
+        <button className={cx('resetButton')} onClick={handleReset} type="button">
+          Reset
         </button>
         <br />
         <span className={cx('randomizerHint')}>Leave blank for random seed</span>

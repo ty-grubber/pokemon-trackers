@@ -18,6 +18,14 @@
   margin-left: 0.5rem;
 }
 
+.resetButton {
+  background-color: white;
+  border: 2px solid purple;
+  border-radius: 2px;
+  color: purple;
+  margin-left: 0.5rem;
+}
+
 .randomizerHint {
   color: grey;
   display: block;

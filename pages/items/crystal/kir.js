@@ -1,5 +1,5 @@
 import React from 'react';
-import KIRTrackerPage from "../../../components/KIRTrackerPage";
+import KIRTrackerPage from "../../../views/KIRTrackerPage";
 
 export default function FIR() {
   return <KIRTrackerPage />

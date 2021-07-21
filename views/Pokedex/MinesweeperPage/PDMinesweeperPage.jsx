@@ -1,8 +1,8 @@
 import classnames from 'classnames/bind';
 import Head from 'next/head';
 import React from 'react';
-import Layout from '../../Layout';
-import UnderConstruction from '../../UnderConstruction';
+import Layout from '../../../components/Layout';
+import UnderConstruction from '../../../components/UnderConstruction';
 import styles from './PDMinesweeperPage.module.css';
 
 const cx = classnames.bind(styles);

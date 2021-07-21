@@ -2,9 +2,9 @@ import classnames from 'classnames/bind';
 import Head from 'next/head';
 import Image from 'next/image';
 import React, { useCallback, useState } from 'react';
-import Layout from '../../Layout';
+import Grid from '../../../components/Grid';
+import Layout from '../../../components/Layout';
 import { NATIONAL_DEX } from '../../../lib/constants/pokedex.js';
-import Grid from '../../Grid';
 import styles from './BasicTrackerPage.module.css';
 
 const cx = classnames.bind(styles);

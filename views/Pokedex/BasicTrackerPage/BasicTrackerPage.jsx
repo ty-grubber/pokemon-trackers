@@ -1,10 +1,10 @@
 import classnames from 'classnames/bind';
 import Head from 'next/head';
-import Image from 'next/image';
 import React, { useCallback, useState } from 'react';
 import Grid from '../../../components/Grid';
 import Layout from '../../../components/Layout';
-import { NATIONAL_DEX } from '../../../lib/constants/pokedex.js';
+import PokedexGrid from '../../../components/PokedexGrid';
+import { NATIONAL_DEX } from '../../../lib/constants/pokedex';
 import styles from './BasicTrackerPage.module.css';
 
 const cx = classnames.bind(styles);
@@ -52,26 +52,7 @@ export default function BasicTracker() {
       <section>
         <Grid className={cx('trackerGrid')} columns={2}>
           <Grid.Cell className={cx('pokedexContainer')}>
-            <Grid className={cx('pokedexGrid')} columns={20}>
-              {NATIONAL_DEX.map(({ id, name }) => (
-                <Grid.Cell
-                  key={id}
-                  maxHeight="40px"
-                  onLeftClick={handleClick}
-                  onRightClick={handleClick}
-                  trackClicks
-                >
-                  <Image
-                    alt={`${name}`}
-                    height={40}
-                    priority
-                    src={`/images/pokemon/${id}.png`}
-                    title={`${name}`}
-                    width={40}
-                    />
-                </Grid.Cell>
-              ))}
-            </Grid>
+            <PokedexGrid onCellClick={handleClick} />
           </Grid.Cell>
           <Grid.Cell className={cx('trackerContainer')}>
             <header className={cx('header')}>

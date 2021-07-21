@@ -1,4 +1,23 @@
-.pokedexGrid {
+.pokedexGrid,
+.randomizerContainer {
   margin: 1rem auto;
   max-width: 800px;
+}
+
+.randomizerInput {
+  color: darkgreen;
+}
+
+.randomizerButton {
+  background-color: purple;
+  border: 2px solid purple;
+  border-radius: 2px;
+  color: white;
+  margin-left: 0.5rem;
+}
+
+.randomizerHint {
+  color: grey;
+  display: block;
+  font-size: 0.65rem;
 }

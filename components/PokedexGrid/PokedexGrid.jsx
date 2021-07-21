@@ -10,26 +10,36 @@ const cx = classnames.bind(styles);
 
 export default function PokedexGrid({ onCellClick }) {
   return (
-    <Grid className={cx('pokedexGrid')} columns={20}>
-      {NATIONAL_DEX.map(({ id, name }) => (
-        <Grid.Cell
-          key={id}
-          maxHeight="40px"
-          onLeftClick={onCellClick}
-          onRightClick={onCellClick}
-          trackClicks
-        >
-          <Image
-            alt={`${name}`}
-            height={40}
-            priority
-            src={`/images/pokemon/${id}.png`}
-            title={`${name}`}
-            width={40}
-            />
-        </Grid.Cell>
-      ))}
-    </Grid>
+    <>
+      <Grid className={cx('pokedexGrid')} columns={20}>
+        {NATIONAL_DEX.map(({ id, name }) => (
+          <Grid.Cell
+            key={id}
+            maxHeight="40px"
+            onLeftClick={onCellClick}
+            onRightClick={onCellClick}
+            trackClicks
+          >
+            <Image
+              alt={`${name}`}
+              height={40}
+              priority
+              src={`/images/pokemon/${id}.png`}
+              title={`${name}`}
+              width={40}
+              />
+          </Grid.Cell>
+        ))}
+      </Grid>
+      <div className={cx('randomizerContainer')}>
+        <input id="seedInput" />
+        <button className={cx('randomizerButton')}>
+          Randomize
+        </button>
+        <br />
+        <span className={cx('randomizerHint')}>Leave blank for random seed</span>
+      </div>
+    </>
   )
 }
 

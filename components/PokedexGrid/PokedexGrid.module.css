@@ -4,8 +4,10 @@
   max-width: 800px;
 }
 
-.randomizerInput {
-  color: darkgreen;
+.seedInput {
+  color: purple;
+  font-family: monospace;
+  width: 200px;
 }
 
 .randomizerButton {

@@ -2,16 +2,18 @@ import classnames from 'classnames/bind';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import short from 'short-uuid';
+import { NATIONAL_DEX } from '../../lib/constants/pokedex';
+import { randomizePokedex } from '../../lib/utils/randomize';
 import Grid from '../Grid';
-import { NATIONAL_DEX } from '../../lib/constants/pokedex.js';
 import styles from './PokedexGrid.module.css';
 
 const cx = classnames.bind(styles);
 
 export default function PokedexGrid({ onCellClick }) {
   const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
-  const [activeSeed, setActiveSeed] = useState();
-  const [inputSeed, setInputSeed] = useState();
+  const [activeSeed, setActiveSeed] = useState('');
+  const [inputSeed, setInputSeed] = useState('');
 
   const handleSeedChange = useCallback(({ target }) => {
     setInputSeed(target.value);
@@ -19,9 +21,9 @@ export default function PokedexGrid({ onCellClick }) {
 
   const handleRandomize = useCallback((e) => {
     e.preventDefault();
-    const checkSeed = inputSeed || 'randomSeed';
+    const checkSeed = inputSeed || short.generate();
     if (checkSeed !== activeSeed) {
-      setOrderedPokedex(orderedPokedex => orderedPokedex.reverse());
+      setOrderedPokedex(randomizePokedex(checkSeed));
       setActiveSeed(checkSeed);
       setInputSeed(checkSeed);
     }
@@ -50,7 +52,7 @@ export default function PokedexGrid({ onCellClick }) {
         ))}
       </Grid>
       <div className={cx('randomizerContainer')}>
-        <input id="seedInput" onChange={handleSeedChange} value={inputSeed} />
+        <input id="seedInput" className={cx('seedInput')} onChange={handleSeedChange} value={inputSeed} maxLength="22" />
         <button className={cx('randomizerButton')} onClick={handleRandomize} type="button">
           Randomize
         </button>

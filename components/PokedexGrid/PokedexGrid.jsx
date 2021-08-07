@@ -63,8 +63,8 @@ export default function PokedexGrid({ onCellClick }) {
   }, []);
 
   return (
-    <>
-      <Grid className={cx('pokedexGrid')} columns={20}>
+    <div className={cx('pokedexGrid')}>
+      <Grid columns={20}>
         {orderedPokedex.map(({ id, name }) => (
           <Grid.Cell
             key={id}
@@ -85,6 +85,7 @@ export default function PokedexGrid({ onCellClick }) {
           </Grid.Cell>
         ))}
       </Grid>
+      <br />
       <div className={cx('randomizerContainer')}>
         <input
           id="seedInput"
@@ -101,6 +102,10 @@ export default function PokedexGrid({ onCellClick }) {
         <button className={cx('resetButton')} onClick={handleReset} type="button">
           Reset
         </button>
+        <br />
+        <span className={cx('hintText')}>Leave blank for random seed</span>
+      </div>
+      <div className={cx('searchContainer')}>
         <label htmlFor="searchInput" className={cx('inputLabel')}>Grid Search: </label>
         <input
           id="searchInput"
@@ -112,9 +117,9 @@ export default function PokedexGrid({ onCellClick }) {
           value={searchTerm}
         />
         <br />
-        <span className={cx('randomizerHint')}>Leave blank for random seed</span>
+        <span className={cx('hintText')}>Press escape to auto-clear</span>
       </div>
-    </>
+    </div>
   )
 }
 

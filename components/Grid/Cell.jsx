@@ -6,6 +6,7 @@ export default function Cell({
   bgColors,
   className,
   defaultClickValue,
+  matchesSearch,
   maxHeight,
   onLeftClick,
   onRightClick,
@@ -15,8 +16,9 @@ export default function Cell({
   const [clickValue, setClickValue] = useState(defaultClickValue);
   const cellStyles = css`
     background-color: ${bgColors[clickValue]};
-    max-height: ${maxHeight};
     flex-grow: 1;
+    max-height: ${maxHeight};
+    opacity: ${matchesSearch ? '1' : '0.3'};
 `
   const handleClick = useCallback(() => {
     if (trackClicks) {
@@ -48,6 +50,7 @@ Cell.propTypes = {
   bgColors: PropTypes.arrayOf(PropTypes.string),
   className: PropTypes.string,
   defaultClickValue: PropTypes.number,
+  matchesSearch: PropTypes.bool,
   maxHeight: PropTypes.string,
   onLeftClick: PropTypes.func,
   onRightClick: PropTypes.func,
@@ -58,6 +61,7 @@ Cell.defaultProps = {
   bgColors: ['#0f0','#00f','#fff','#000','#f00'],
   className: undefined,
   defaultClickValue: 2,
+  matchesSearch: true,
   maxHeight: 'auto',
   onLeftClick: () => { },
   onRightClick: () => { },

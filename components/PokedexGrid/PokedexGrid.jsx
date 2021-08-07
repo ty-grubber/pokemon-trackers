@@ -1,7 +1,7 @@
 import classnames from 'classnames/bind';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import short from 'short-uuid';
 import { NATIONAL_DEX } from '../../lib/constants/pokedex';
 import { randomizePokedex } from '../../lib/utils/randomize';
@@ -14,6 +14,28 @@ export default function PokedexGrid({ onCellClick }) {
   const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
   const [activeSeed, setActiveSeed] = useState('');
   const [inputSeed, setInputSeed] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const searchInputRef = useRef();
+  const seedInputRef = useRef();
+
+  const documentKeyDownListener = useCallback((e) => {
+    const keyCode = e.which || e.keyCode;
+    const inputsAreBlurred = document.activeElement !== searchInputRef.current && document.activeElement !== seedInputRef.current;
+    // valid keys are letters, numbers, dash, apostrophe or period;
+    const validKeyPressed = (keyCode >= 48 && keyCode <= 90) || keyCode === 222 || keyCode === 189 || keyCode === 190;
+    if (inputsAreBlurred && validKeyPressed) {
+      searchInputRef.current.focus();
+    } else if (keyCode === 27) {
+      setSearchTerm('');
+      searchInputRef.current.blur();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (document && searchInputRef.current) {
+      document.addEventListener('keydown', documentKeyDownListener);
+    }
+  }, []);
 
   const handleSeedChange = useCallback(({ target }) => {
     setInputSeed(target.value);
@@ -34,14 +56,19 @@ export default function PokedexGrid({ onCellClick }) {
     setOrderedPokedex(NATIONAL_DEX);
     setActiveSeed('');
     setInputSeed('');
-  })
+  }, []);
+
+  const handleSearchChange = useCallback(({ target }) => {
+    setSearchTerm(target.value.toLowerCase());
+  }, []);
 
   return (
-    <>
-      <Grid className={cx('pokedexGrid')} columns={20}>
+    <div className={cx('pokedexGrid')}>
+      <Grid columns={20}>
         {orderedPokedex.map(({ id, name }) => (
           <Grid.Cell
             key={id}
+            matchesSearch={!searchTerm || name.toLowerCase().includes(searchTerm)}
             maxHeight="40px"
             onLeftClick={onCellClick}
             onRightClick={onCellClick}
@@ -58,8 +85,17 @@ export default function PokedexGrid({ onCellClick }) {
           </Grid.Cell>
         ))}
       </Grid>
+      <br />
       <div className={cx('randomizerContainer')}>
-        <input id="seedInput" className={cx('seedInput')} onChange={handleSeedChange} value={inputSeed} maxLength="22" />
+        <input
+          id="seedInput"
+          ref={seedInputRef}
+          className={cx('seedInput')}
+          maxLength="22"
+          onChange={handleSeedChange}
+          spellCheck="false"
+          value={inputSeed}
+        />
         <button className={cx('randomizerButton')} onClick={handleRandomize} type="button">
           Randomize
         </button>
@@ -67,9 +103,23 @@ export default function PokedexGrid({ onCellClick }) {
           Reset
         </button>
         <br />
-        <span className={cx('randomizerHint')}>Leave blank for random seed</span>
+        <span className={cx('hintText')}>Leave blank for random seed</span>
       </div>
-    </>
+      <div className={cx('searchContainer')}>
+        <label htmlFor="searchInput" className={cx('inputLabel')}>Grid Search: </label>
+        <input
+          id="searchInput"
+          ref={searchInputRef}
+          className={cx('searchInput')}
+          maxLength="15"
+          onChange={handleSearchChange}
+          spellCheck="false"
+          value={searchTerm}
+        />
+        <br />
+        <span className={cx('hintText')}>Press escape to auto-clear</span>
+      </div>
+    </div>
   )
 }
 

@@ -1,13 +1,31 @@
-.pokedexGrid,
-.randomizerContainer {
+.pokedexGrid {
   margin: 1rem auto;
   max-width: 800px;
 }
 
-.seedInput {
+.randomizerContainer,
+.searchContainer {
+  display: inline-block;
+}
+
+.searchContainer {
+  padding-left: 5rem;
+}
+
+.inputLabel {
+  color: darkgreen;
+  font-size: 0.8rem;
+}
+
+.seedInput,
+.searchInput {
   color: purple;
   font-family: monospace;
   width: 200px;
+}
+
+.searchInput {
+  color: darkgreen;
 }
 
 .randomizerButton {
@@ -26,7 +44,7 @@
   margin-left: 0.5rem;
 }
 
-.randomizerHint {
+.hintText {
   color: grey;
   display: block;
   font-size: 0.65rem;

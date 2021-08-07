@@ -1,7 +1,7 @@
 import classnames from 'classnames/bind';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import short from 'short-uuid';
 import { NATIONAL_DEX } from '../../lib/constants/pokedex';
 import { randomizePokedex } from '../../lib/utils/randomize';
@@ -14,6 +14,7 @@ export default function PokedexGrid({ onCellClick }) {
   const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
   const [activeSeed, setActiveSeed] = useState('');
   const [inputSeed, setInputSeed] = useState('');
+  const [searchTerm, setSearchTerm] = useState();
 
   const handleSeedChange = useCallback(({ target }) => {
     setInputSeed(target.value);
@@ -34,7 +35,11 @@ export default function PokedexGrid({ onCellClick }) {
     setOrderedPokedex(NATIONAL_DEX);
     setActiveSeed('');
     setInputSeed('');
-  })
+  }, []);
+
+  useEffect(() => {
+    setSearchTerm(null);
+  });
 
   return (
     <>
@@ -42,6 +47,7 @@ export default function PokedexGrid({ onCellClick }) {
         {orderedPokedex.map(({ id, name }) => (
           <Grid.Cell
             key={id}
+            matchesSearch={!searchTerm || name.includes(searchTerm)}
             maxHeight="40px"
             onLeftClick={onCellClick}
             onRightClick={onCellClick}

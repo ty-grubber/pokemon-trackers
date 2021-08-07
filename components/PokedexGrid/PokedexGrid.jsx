@@ -1,7 +1,7 @@
 import classnames from 'classnames/bind';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import short from 'short-uuid';
 import { NATIONAL_DEX } from '../../lib/constants/pokedex';
 import { randomizePokedex } from '../../lib/utils/randomize';
@@ -14,7 +14,7 @@ export default function PokedexGrid({ onCellClick }) {
   const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
   const [activeSeed, setActiveSeed] = useState('');
   const [inputSeed, setInputSeed] = useState('');
-  const [searchTerm, setSearchTerm] = useState();
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleSeedChange = useCallback(({ target }) => {
     setInputSeed(target.value);
@@ -37,9 +37,16 @@ export default function PokedexGrid({ onCellClick }) {
     setInputSeed('');
   }, []);
 
-  useEffect(() => {
-    setSearchTerm(null);
-  });
+  const handleSearchChange = useCallback(({ target }) => {
+    setSearchTerm(target.value.toLowerCase());
+  }, []);
+
+  const handleSearchKeyDown = useCallback((e) => {
+    const keyCode = e.which || e.keyCode;
+    if (keyCode === 27) {
+      setSearchTerm('');
+    }
+  }, []);
 
   return (
     <>
@@ -47,7 +54,7 @@ export default function PokedexGrid({ onCellClick }) {
         {orderedPokedex.map(({ id, name }) => (
           <Grid.Cell
             key={id}
-            matchesSearch={!searchTerm || name.includes(searchTerm)}
+            matchesSearch={!searchTerm || name.toLowerCase().includes(searchTerm)}
             maxHeight="40px"
             onLeftClick={onCellClick}
             onRightClick={onCellClick}
@@ -65,13 +72,28 @@ export default function PokedexGrid({ onCellClick }) {
         ))}
       </Grid>
       <div className={cx('randomizerContainer')}>
-        <input id="seedInput" className={cx('seedInput')} onChange={handleSeedChange} value={inputSeed} maxLength="22" />
+        <input
+          id="seedInput"
+          className={cx('seedInput')}
+          maxLength="22"
+          onChange={handleSeedChange}
+          value={inputSeed}
+        />
         <button className={cx('randomizerButton')} onClick={handleRandomize} type="button">
           Randomize
         </button>
         <button className={cx('resetButton')} onClick={handleReset} type="button">
           Reset
         </button>
+        <label htmlFor="searchInput" className={cx('inputLabel')}>Grid Search: </label>
+        <input
+          id="searchInput"
+          className={cx('searchInput')}
+          maxLength="15"
+          onChange={handleSearchChange}
+          onKeyDown={handleSearchKeyDown}
+          value={searchTerm}
+        />
         <br />
         <span className={cx('randomizerHint')}>Leave blank for random seed</span>
       </div>

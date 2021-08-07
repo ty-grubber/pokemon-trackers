@@ -4,10 +4,21 @@
   max-width: 800px;
 }
 
-.seedInput {
+.inputLabel {
+  color: darkgreen;
+  font-size: 0.8rem;
+  margin-left: 5rem;
+}
+
+.seedInput,
+.searchInput {
   color: purple;
   font-family: monospace;
   width: 200px;
+}
+
+.searchInput {
+  color: darkgreen;
 }
 
 .randomizerButton {

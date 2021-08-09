@@ -33,7 +33,7 @@ export default function BasicTracker() {
         [oldValue]: currentSet[oldValue] - 1,
       }));
     }
-  });
+  }, [clickedValues]);
 
   const caughtCount = clickedValues[3] + clickedValues[4];
   const trackedCount = clickedValues[0] + clickedValues[1];

@@ -6,7 +6,9 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react-hooks/recommended"
   ],
   "parserOptions": {
     "ecmaFeatures": {
@@ -16,9 +18,10 @@
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "jsx-a11y"
   ],
   "rules": {
+    "jsx-a11y/anchor-is-valid": 0
   },
   "settings": {
     "version": "detect"

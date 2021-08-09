@@ -35,7 +35,7 @@ export default function PokedexGrid({ onCellClick }) {
     if (document && searchInputRef.current) {
       document.addEventListener('keydown', documentKeyDownListener);
     }
-  }, []);
+  }, [documentKeyDownListener]);
 
   const handleSeedChange = useCallback(({ target }) => {
     setInputSeed(target.value);

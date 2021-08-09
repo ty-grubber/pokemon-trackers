@@ -28,7 +28,7 @@ export default function Cell({
         return newValue;
       })
     }
-  }, []);
+  }, [bgColors.length, onLeftClick, trackClicks]);
 
   const handleContextMenu = useCallback((e) => {
     if (trackClicks) {
@@ -39,10 +39,18 @@ export default function Cell({
         return newValue;
       })
     }
-  }, [])
+  }, [onRightClick, trackClicks]);
 
   return (
-    <div css={cellStyles} className={className} onClick={handleClick} onContextMenu={handleContextMenu} {...rest} />
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      css={cellStyles}
+      className={className}
+      onClick={handleClick}
+      onContextMenu={handleContextMenu}
+      onKeyDown={handleClick}
+      {...rest}
+    />
   );
 }
 

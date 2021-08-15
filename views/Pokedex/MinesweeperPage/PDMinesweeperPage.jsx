@@ -9,12 +9,13 @@ import styles from './PDMinesweeperPage.module.css';
 const cx = classnames.bind(styles);
 
 const selectedPokeOptions = [
-  { clickValue: 1, color: 'darkblue', text: 'Seen' },
+  { clickValue: 0, color: 'white', text: 'Reset', textColor: 'black' },
+  { clickValue: 1, color: 'dodgerblue', text: 'Seen' },
   { clickValue: 2, color: 'darkgoldenrod', text: 'Caught' },
   { clickValue: 3, color: 'red', text: 'Flag' },
   { clickValue: 4, color: 'grey', text: 'Mine' },
   { clickValue: 5, color: 'black', text: 'Explode' },
-]
+];
 
 export default function Minesweeper() {
   return (

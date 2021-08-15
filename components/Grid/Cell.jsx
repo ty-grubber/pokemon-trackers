@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 export default function Cell({
   bgColors,
@@ -44,6 +44,10 @@ export default function Cell({
       onRightClick();
     }
   }, [onRightClick, trackClicks]);
+
+  useEffect(() => {
+    setClickValue(defaultClickValue);
+  }, [defaultClickValue]);
 
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions

@@ -10,7 +10,7 @@ import styles from './PokedexGrid.module.css';
 
 const cx = classnames.bind(styles);
 
-export default function PokedexGrid({ onCellClick }) {
+export default function PokedexGrid({ onCellClick, selectedPokeOptions, trackClicks }) {
   const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
   const [activeSeed, setActiveSeed] = useState('');
   const [inputSeed, setInputSeed] = useState('');
@@ -72,7 +72,7 @@ export default function PokedexGrid({ onCellClick }) {
             maxHeight="40px"
             onLeftClick={onCellClick}
             onRightClick={onCellClick}
-            trackClicks
+            trackClicks={trackClicks}
           >
             <Image
               alt={`${name}`}
@@ -85,6 +85,26 @@ export default function PokedexGrid({ onCellClick }) {
           </Grid.Cell>
         ))}
       </Grid>
+      {selectedPokeOptions.length > 0 && (
+        <>
+          <br />
+          <div className={cx('pokeOptionsContainer')}>
+            <span className={cx('inputLabel')}>Actions: </span>
+            {selectedPokeOptions.map(({clickValue, color, text}) => (
+              <button
+                key={text}
+                className={cx('clickOptionButton')}
+                disabled
+                onClick={() => { console.log(clickValue) }}
+                style={{ backgroundColor: color }}
+                type='button'
+              >
+                {text}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
       <br />
       <div className={cx('randomizerContainer')}>
         <input
@@ -125,8 +145,16 @@ export default function PokedexGrid({ onCellClick }) {
 
 PokedexGrid.propTypes = {
   onCellClick: PropTypes.func,
+  selectedPokeOptions: PropTypes.arrayOf(PropTypes.shape({
+    clickValue: PropTypes.number.isRequired,
+    color: PropTypes.string,
+    text: PropTypes.string.isRequired,
+  })),
+  trackClicks: PropTypes.bool,
 }
 
 PokedexGrid.defaultProps = {
   onCellClick: () => { },
+  selectedPokeOptions: [],
+  trackClicks: false,
 }

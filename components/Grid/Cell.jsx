@@ -27,17 +27,21 @@ export default function Cell({
         onLeftClick(newValue, currentValue);
         return newValue;
       })
+    } else {
+      onLeftClick();
     }
   }, [bgColors.length, onLeftClick, trackClicks]);
 
   const handleContextMenu = useCallback((e) => {
+    e.preventDefault();
     if (trackClicks) {
-      e.preventDefault();
       setClickValue(currentValue => {
         const newValue = Math.max(currentValue - 1, 0);
         onRightClick(newValue, currentValue);
         return newValue;
       })
+    } else {
+      onRightClick();
     }
   }, [onRightClick, trackClicks]);
 

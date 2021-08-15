@@ -8,8 +8,14 @@
   display: inline-block;
 }
 
+.clickOptionButton {
+  border: 2px solid black;
+  margin-left: 1rem;
+  padding: 0.25rem 1rem;
+}
+
 .searchContainer {
-  padding-left: 5rem;
+  padding-left: 3rem;
 }
 
 .inputLabel {
@@ -32,7 +38,6 @@
   background-color: purple;
   border: 2px solid purple;
   border-radius: 2px;
-  color: white;
   margin-left: 0.5rem;
 }
 

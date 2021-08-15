@@ -24,3 +24,12 @@ img {
   max-width: 100%;
   display: block;
 }
+
+button {
+  color: white;
+  cursor: pointer;
+}
+
+header h1 {
+  margin: 0;
+}

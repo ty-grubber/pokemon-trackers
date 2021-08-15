@@ -29,3 +29,7 @@ button {
   color: white;
   cursor: pointer;
 }
+
+header h1 {
+  margin: 0;
+}

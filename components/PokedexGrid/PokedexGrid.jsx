@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import classnames from 'classnames/bind';
 import Image from 'next/image';
 import PropTypes from 'prop-types';
@@ -10,7 +11,7 @@ import styles from './PokedexGrid.module.css';
 
 const cx = classnames.bind(styles);
 
-export default function PokedexGrid({ onCellClick, selectedPokeOptions, trackClicks }) {
+export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions, trackClicks }) {
   const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
   const [activeSeed, setActiveSeed] = useState('');
   const [inputSeed, setInputSeed] = useState('');
@@ -62,9 +63,13 @@ export default function PokedexGrid({ onCellClick, selectedPokeOptions, trackCli
     setSearchTerm(target.value.toLowerCase());
   }, []);
 
+  const gridStyles = css`
+    max-width: ${columns > 16 ? 800 : 670 - (40 * (16 - columns))}px;
+`
+
   return (
-    <div className={cx('pokedexGrid')}>
-      <Grid columns={20}>
+    <>
+      <Grid className={cx('pokedexGrid')} css={gridStyles} columns={columns}>
         {orderedPokedex.map(({ id, name }) => (
           <Grid.Cell
             key={id}
@@ -86,24 +91,21 @@ export default function PokedexGrid({ onCellClick, selectedPokeOptions, trackCli
         ))}
       </Grid>
       {selectedPokeOptions.length > 0 && (
-        <>
-          <br />
-          <div className={cx('pokeOptionsContainer')}>
-            <span className={cx('inputLabel')}>Actions: </span>
-            {selectedPokeOptions.map(({clickValue, color, text}) => (
-              <button
-                key={text}
-                className={cx('clickOptionButton')}
-                disabled
-                onClick={() => { console.log(clickValue) }}
-                style={{ backgroundColor: color }}
-                type='button'
-              >
-                {text}
-              </button>
-            ))}
-          </div>
-        </>
+        <div className={cx('pokeOptionsContainer')}>
+          <span className={cx('inputLabel')}>Actions: </span>
+          {selectedPokeOptions.map(({clickValue, color, text}) => (
+            <button
+              key={text}
+              className={cx('clickOptionButton')}
+              disabled
+              onClick={() => { console.log(clickValue) }}
+              style={{ backgroundColor: color }}
+              type='button'
+            >
+              {text}
+            </button>
+          ))}
+        </div>
       )}
       <br />
       <div className={cx('randomizerContainer')}>
@@ -139,11 +141,12 @@ export default function PokedexGrid({ onCellClick, selectedPokeOptions, trackCli
         <br />
         <span className={cx('hintText')}>Press escape to auto-clear</span>
       </div>
-    </div>
+    </>
   )
 }
 
 PokedexGrid.propTypes = {
+  columns: PropTypes.number,
   onCellClick: PropTypes.func,
   selectedPokeOptions: PropTypes.arrayOf(PropTypes.shape({
     clickValue: PropTypes.number.isRequired,
@@ -154,6 +157,7 @@ PokedexGrid.propTypes = {
 }
 
 PokedexGrid.defaultProps = {
+  columns: 20,
   onCellClick: () => { },
   selectedPokeOptions: [],
   trackClicks: false,

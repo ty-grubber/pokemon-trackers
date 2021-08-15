@@ -1,7 +1,7 @@
+import { css } from '@emotion/react';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Cell from './Cell';
-import { css } from '@emotion/react';
 
 function Grid({ className, columns, ...rest }) {
   const gridContainerStyles = css`

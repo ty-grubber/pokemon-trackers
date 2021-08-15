@@ -34,11 +34,14 @@ export default function Minesweeper() {
       <section>
         <Grid className={cx('trackerGrid')} columns={2}>
           <Grid.Cell className={cx('pokedexContainer')}>
-            <PokedexGrid selectedPokeOptions={selectedPokeOptions}/>
+            <PokedexGrid
+              columns={16}
+              selectedPokeOptions={selectedPokeOptions}
+            />
           </Grid.Cell>
           <Grid.Cell className={cx('trackerContainer')}>
             <header className={cx('header')}>
-              <h1>Minesweeper</h1>
+              <h2>Minesweeper</h2>
             </header>
             <div className={cx('countContainer')}>
               Counts go here

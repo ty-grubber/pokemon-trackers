@@ -16,6 +16,7 @@ export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions,
   const [activeSeed, setActiveSeed] = useState('');
   const [inputSeed, setInputSeed] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedPokemon, setSelectedPokemon] = useState();
   const searchInputRef = useRef();
   const seedInputRef = useRef();
 
@@ -63,6 +64,16 @@ export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions,
     setSearchTerm(target.value.toLowerCase());
   }, []);
 
+  const createLeftClickHandler = useCallback(selectedPoke => () => {
+    setSelectedPokemon(orderedPokedex.find(poke => poke.id === selectedPoke.id));
+    onCellClick();
+  }, [onCellClick, orderedPokedex]);
+
+  const handleRightClick = useCallback(() => {
+    setSelectedPokemon(undefined);
+    onCellClick();
+  }, [onCellClick]);
+
   const gridStyles = css`
     max-width: ${columns > 16 ? 800 : 670 - (40 * (16 - columns))}px;
 `
@@ -75,8 +86,8 @@ export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions,
             key={id}
             matchesSearch={!searchTerm || name.toLowerCase().includes(searchTerm)}
             maxHeight="40px"
-            onLeftClick={onCellClick}
-            onRightClick={onCellClick}
+            onLeftClick={createLeftClickHandler({ id })}
+            onRightClick={handleRightClick}
             trackClicks={trackClicks}
           >
             <Image
@@ -92,19 +103,26 @@ export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions,
       </Grid>
       {selectedPokeOptions.length > 0 && (
         <div className={cx('pokeOptionsContainer')}>
-          <span className={cx('inputLabel')}>Actions: </span>
-          {selectedPokeOptions.map(({clickValue, color, text}) => (
-            <button
-              key={text}
-              className={cx('clickOptionButton')}
-              disabled
-              onClick={() => { console.log(clickValue) }}
-              style={{ backgroundColor: color }}
-              type='button'
-            >
-              {text}
-            </button>
-          ))}
+          {selectedPokemon ? (
+            <>
+              <span className={cx('inputLabel')}>
+                Actions{selectedPokemon && ` for ${selectedPokemon.name}`}:
+              </span>
+              {selectedPokeOptions.map(({clickValue, color, text}) => (
+                <button
+                  key={text}
+                  className={cx('clickOptionButton')}
+                  onClick={() => { console.log(clickValue) }}
+                  style={{ backgroundColor: color }}
+                  type='button'
+                >
+                  {text}
+                </button>
+              ))}
+            </>
+          ) : (
+            <span className={cx('inputLabel')}>Click a pokemon to see available actions</span>
+          )}
         </div>
       )}
       <br />

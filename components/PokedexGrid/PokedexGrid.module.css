@@ -10,11 +10,8 @@
 
 .clickOptionButton {
   border: 2px solid black;
-  padding: 0.25rem 1rem;
-}
-
-.clickOptionButton + .clickOptionButton {
   margin-left: 1rem;
+  padding: 0.25rem 1rem;
 }
 
 .searchContainer {

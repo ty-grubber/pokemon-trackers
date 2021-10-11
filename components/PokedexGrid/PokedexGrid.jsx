@@ -5,19 +5,21 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import short from 'short-uuid';
 import { NATIONAL_DEX } from '../../lib/constants/pokedex';
+import { convertIndexTo2DIndex, noop } from '../../lib/utils';
 import { randomizePokedex } from '../../lib/utils/randomize';
 import Grid from '../Grid';
 import styles from './PokedexGrid.module.css';
 
 const cx = classnames.bind(styles);
 
-export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions, trackClicks }) {
+export default function PokedexGrid({ columns, onCellClick, onRandomize, selectedPokeOptions, trackClicks }) {
   const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
   const [pokemonClickValues, setPokemonClickValues] = useState(Array(NATIONAL_DEX.length + 1).fill(0));
   const [activeSeed, setActiveSeed] = useState('');
   const [inputSeed, setInputSeed] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPokemon, setSelectedPokemon] = useState();
+  const [selectedGrid, setSelectedGrid] = useState();
   const searchInputRef = useRef();
   const seedInputRef = useRef();
 
@@ -51,8 +53,9 @@ export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions,
       setOrderedPokedex(randomizePokedex(checkSeed));
       setActiveSeed(checkSeed);
       setInputSeed(checkSeed);
+      onRandomize(checkSeed);
     }
-  }, [activeSeed, inputSeed]);
+  }, [activeSeed, inputSeed, onRandomize]);
 
   const handleReset = useCallback((e) => {
     e.preventDefault();
@@ -67,21 +70,26 @@ export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions,
 
   const createLeftClickHandler = useCallback(selectedPoke => () => {
     setSelectedPokemon(orderedPokedex.find(poke => poke.id === selectedPoke.id));
+    setSelectedGrid(convertIndexTo2DIndex(selectedPoke.index, columns))
     onCellClick();
-  }, [onCellClick, orderedPokedex]);
+  }, [columns, onCellClick, orderedPokedex]);
 
   const handleRightClick = useCallback(() => {
     setSelectedPokemon(undefined);
+    setSelectedGrid(undefined);
     onCellClick();
   }, [onCellClick]);
 
-  const createActionClickHandler = useCallback(clickValue => () => {
+  const createActionClickHandler = useCallback((action, clickValue) => () => {
     setPokemonClickValues(existingClickValues => {
       const newClickValues = [...existingClickValues];
       newClickValues[selectedPokemon.id] = clickValue;
       return newClickValues;
     });
-  }, [selectedPokemon]);
+    if (typeof action === 'function') {
+      action(selectedGrid, clickValue);
+    }
+  }, [selectedGrid, selectedPokemon]);
 
   const gridStyles = css`
     max-width: ${columns > 16 ? 800 : 670 - (40 * (16 - columns))}px;
@@ -94,14 +102,14 @@ export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions,
   return (
     <>
       <Grid className={cx('pokedexGrid')} css={gridStyles} columns={columns}>
-        {orderedPokedex.map(({ id, name }) => (
+        {orderedPokedex.map(({ id, name }, index) => (
           <Grid.Cell
             key={id}
             bgColors={bgColors}
             defaultClickValue={pokemonClickValues[id]}
             matchesSearch={!searchTerm || name.toLowerCase().includes(searchTerm)}
             maxHeight="40px"
-            onLeftClick={createLeftClickHandler({ id })}
+            onLeftClick={createLeftClickHandler({ id, index })}
             onRightClick={handleRightClick}
             trackClicks={trackClicks}
           >
@@ -123,11 +131,11 @@ export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions,
               <span className={cx('inputLabel')}>
                 {selectedPokemon.name} Actions:
               </span>
-              {selectedPokeOptions.map(({clickValue, color, text, textColor}) => (
+              {selectedPokeOptions.map(({action, clickValue, color, text, textColor}) => (
                 <button
                   key={text}
                   className={cx('clickOptionButton')}
-                  onClick={createActionClickHandler(clickValue)}
+                  onClick={createActionClickHandler(action, clickValue)}
                   style={{ backgroundColor: color, color: `${textColor || 'white'}`}}
                   type='button'
                 >
@@ -181,6 +189,7 @@ export default function PokedexGrid({ columns, onCellClick, selectedPokeOptions,
 PokedexGrid.propTypes = {
   columns: PropTypes.number,
   onCellClick: PropTypes.func,
+  onRandomize: PropTypes.func,
   selectedPokeOptions: PropTypes.arrayOf(PropTypes.shape({
     clickValue: PropTypes.number.isRequired,
     color: PropTypes.string,
@@ -192,7 +201,8 @@ PokedexGrid.propTypes = {
 
 PokedexGrid.defaultProps = {
   columns: 20,
-  onCellClick: () => { },
+  onCellClick: noop,
+  onRandomize: noop,
   selectedPokeOptions: [],
   trackClicks: false,
 }

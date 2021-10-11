@@ -10,18 +10,32 @@ import { randomizeArray } from '../../../lib/utils/randomize';
 import styles from './PDMinesweeperPage.module.css';
 
 const cx = classnames.bind(styles);
-
-
-
 const MINE = 'M';
 const COLUMNS = 16;
 const NUM_MINES = 40;
+const INITIAL_TRACKER = {
+  reset: NATIONAL_DEX.length + 5,
+  seen: 0,
+  caught: 0,
+  flagged: 0,
+  mine: 0,
+  explosions: 0,
+};
+const MAP_PROGRESS_TO_TRACKER = {
+  0: 'reset',
+  1: 'seen',
+  2: 'caught',
+  3: 'flagged',
+  4: 'mine',
+  5: 'explosions',
+};
 
 export default function Minesweeper() {
   // eslint-disable-next-line no-unused-vars
   const [mineGrid, setMineGrid] = useState();
   // eslint-disable-next-line no-unused-vars
   const [progressGrid, setProgressGrid] = useState();
+  const [tracker, setTracker] = useState(INITIAL_TRACKER);
   const generateMineGrids = useCallback((inputSeed) => {
     // TODO: change the +5 based on settings (to closest square based on columns)
     const gridLength = NATIONAL_DEX.length + 5;
@@ -85,12 +99,21 @@ export default function Minesweeper() {
   }, []);
 
   const updateProgress = useCallback((selectedGrid, progressValue) => {
+    const trackerToSubtract = MAP_PROGRESS_TO_TRACKER[progressGrid[selectedGrid.i][selectedGrid.j]];
+    const trackerToIncrease = MAP_PROGRESS_TO_TRACKER[progressValue];
+
+    setTracker(existingTracker => ({
+      ...existingTracker,
+      [trackerToSubtract]: existingTracker[trackerToSubtract] - 1,
+      [trackerToIncrease]: existingTracker[trackerToIncrease] + 1,
+    }));
+
     setProgressGrid(existingGrid => {
       const newGrid = existingGrid.slice();
       newGrid[selectedGrid.i][selectedGrid.j] = progressValue;
       return newGrid;
     });
-  }, []);
+  }, [progressGrid]);
 
   const selectedPokeOptions = useMemo(() => ([
     { clickValue: 0, color: 'grey', text: 'Reset', action: updateProgress },
@@ -129,7 +152,10 @@ export default function Minesweeper() {
               <h2>Minesweeper</h2>
             </header>
             <div className={cx('countContainer')}>
-              Counts go here
+              <span><b>Mines Remaining:&nbsp;</b>{NUM_MINES - tracker.flagged}</span>
+              <br /><br />
+              <span><b>Explosions:&nbsp;</b>{tracker.explosions}</span>
+              <br /><br />
             </div>
           </Grid.Cell>
         </Grid>

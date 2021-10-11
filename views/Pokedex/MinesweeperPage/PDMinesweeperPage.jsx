@@ -10,7 +10,7 @@ import { randomizeArray } from '../../../lib/utils/randomize';
 import styles from './PDMinesweeperPage.module.css';
 
 const cx = classnames.bind(styles);
-const MINE = 'M';
+const MINE = 	'💥';
 const COLUMNS = 16;
 const NUM_MINES = 40;
 const INITIAL_TRACKER = {
@@ -97,21 +97,42 @@ export default function Minesweeper() {
   }, []);
 
   const updateProgress = useCallback((selectedGrid, progressValue) => {
-    const trackerToSubtract = MAP_PROGRESS_TO_TRACKER[progressGrid[selectedGrid.i][selectedGrid.j]];
+    const isMineExposed = progressValue === 4 && mineGrid[selectedGrid.i][selectedGrid.j] === MINE;
+    const trackerToDecrease = MAP_PROGRESS_TO_TRACKER[progressGrid[selectedGrid.i][selectedGrid.j]];
     const trackerToIncrease = MAP_PROGRESS_TO_TRACKER[progressValue];
 
-    setTracker(existingTracker => ({
-      ...existingTracker,
-      [trackerToSubtract]: existingTracker[trackerToSubtract] - 1,
-      [trackerToIncrease]: existingTracker[trackerToIncrease] + 1,
-    }));
+    if (!isMineExposed) {
+      setTracker(existingTracker => ({
+        ...existingTracker,
+        [trackerToDecrease]: existingTracker[trackerToDecrease] - 1,
+        [trackerToIncrease]: existingTracker[trackerToIncrease] + 1,
+      }));
+    } else {
+      if (trackerToDecrease === 'flagged') {
+        // an exposed mine counts as a flagged mine, so no need to update that tracker stat
+        setTracker(existingTracker => ({
+          ...existingTracker,
+          mine: existingTracker.mine + 1,
+          explosions: existingTracker.explosions + 1,
+        }));
+      } else {
+        // need to increase flagged and explosions when an unflagged square that has a mine is mined
+        setTracker(existingTracker => ({
+          ...existingTracker,
+          [trackerToDecrease]: existingTracker[trackerToDecrease] - 1,
+          flagged: existingTracker.flagged + 1,
+          mine: existingTracker.mine + 1,
+          explosions: existingTracker.explosions + 1,
+        }));
+      }
+    }
 
     setProgressGrid(existingGrid => {
       const newGrid = existingGrid.slice();
       newGrid[selectedGrid.i][selectedGrid.j] = progressValue !== 4 ? progressValue : 'X';
       return newGrid;
     });
-  }, [progressGrid]);
+  }, [mineGrid, progressGrid]);
 
   const selectedPokeOptions = useMemo(() => ([
     { clickValue: 0, color: 'grey', text: 'Reset', action: updateProgress },

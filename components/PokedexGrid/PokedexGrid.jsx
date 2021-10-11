@@ -77,10 +77,13 @@ export default function PokedexGrid({
   }, []);
 
   const createLeftClickHandler = useCallback(selectedPoke => () => {
-    setSelectedPokemon(orderedPokedex.find(poke => poke.id === selectedPoke.id));
-    setSelectedGrid(convertIndexTo2DIndex(selectedPoke.index, columns))
-    onCellClick();
-  }, [columns, onCellClick, orderedPokedex]);
+    const ddIndex = convertIndexTo2DIndex(selectedPoke.index, columns);
+    if (hiddenProgressGrid && hiddenProgressGrid[ddIndex.i][ddIndex.j] !== 'X') {
+      setSelectedPokemon(orderedPokedex.find(poke => poke.id === selectedPoke.id));
+      setSelectedGrid(ddIndex)
+      onCellClick();
+    }
+  }, [columns, hiddenProgressGrid, onCellClick, orderedPokedex]);
 
   const handleRightClick = useCallback(() => {
     setSelectedPokemon(undefined);
@@ -113,21 +116,33 @@ export default function PokedexGrid({
         {orderedPokedex.map(({ id, name }, index) => {
           let cellContent = (
             <Image
-              alt={`${name}`}
+              alt={name}
               height={40}
               priority
               src={`/images/pokemon/${id}.png`}
-              title={`${name}`}
+              title={name}
               width={40}
             />
           );
           if (hiddenProgressGrid && hiddenValuesGrid) {
             const ddIndex = convertIndexTo2DIndex(index, columns);
+            const isHiddenMine = typeof hiddenValuesGrid[ddIndex.i][ddIndex.j] !== 'number';
             if (hiddenProgressGrid[ddIndex.i][ddIndex.j] === 'X') {
               cellContent = (
-                <p className={cx('hiddenValue')}>
-                  {hiddenValuesGrid[ddIndex.i][ddIndex.j]}
-                </p>
+                <div className={cx('bgPokemon', { isHiddenMine })}>
+                  <Image
+                    alt={name}
+                    className={cx('bgPokemonImg')}
+                    height={40}
+                    priority
+                    src={`/images/pokemon/${id}.png`}
+                    title={name}
+                    width={40}
+                  />
+                  <p className={cx('hiddenValue')} title={name}>
+                    {hiddenValuesGrid[ddIndex.i][ddIndex.j]}
+                  </p>
+                </div>
               )
             }
           }

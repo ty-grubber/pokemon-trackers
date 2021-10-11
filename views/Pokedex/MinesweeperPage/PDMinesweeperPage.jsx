@@ -31,9 +31,7 @@ const MAP_PROGRESS_TO_TRACKER = {
 };
 
 export default function Minesweeper() {
-  // eslint-disable-next-line no-unused-vars
   const [mineGrid, setMineGrid] = useState();
-  // eslint-disable-next-line no-unused-vars
   const [progressGrid, setProgressGrid] = useState();
   const [tracker, setTracker] = useState(INITIAL_TRACKER);
   const generateMineGrids = useCallback((inputSeed) => {
@@ -110,7 +108,7 @@ export default function Minesweeper() {
 
     setProgressGrid(existingGrid => {
       const newGrid = existingGrid.slice();
-      newGrid[selectedGrid.i][selectedGrid.j] = progressValue;
+      newGrid[selectedGrid.i][selectedGrid.j] = progressValue !== 4 ? progressValue : 'X';
       return newGrid;
     });
   }, [progressGrid]);
@@ -143,6 +141,8 @@ export default function Minesweeper() {
           <Grid.Cell className={cx('pokedexContainer')}>
             <PokedexGrid
               columns={16}
+              hiddenProgressGrid={progressGrid}
+              hiddenValuesGrid={mineGrid}
               onRandomize={generateMineGrids}
               selectedPokeOptions={selectedPokeOptions}
             />

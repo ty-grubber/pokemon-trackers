@@ -12,7 +12,15 @@ import styles from './PokedexGrid.module.css';
 
 const cx = classnames.bind(styles);
 
-export default function PokedexGrid({ columns, onCellClick, onRandomize, selectedPokeOptions, trackClicks }) {
+export default function PokedexGrid({
+  columns,
+  hiddenProgressGrid,
+  hiddenValuesGrid,
+  onCellClick,
+  onRandomize,
+  selectedPokeOptions,
+  trackClicks,
+}) {
   const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
   const [pokemonClickValues, setPokemonClickValues] = useState(Array(NATIONAL_DEX.length + 1).fill(0));
   const [activeSeed, setActiveSeed] = useState('');
@@ -102,17 +110,8 @@ export default function PokedexGrid({ columns, onCellClick, onRandomize, selecte
   return (
     <>
       <Grid className={cx('pokedexGrid')} css={gridStyles} columns={columns}>
-        {orderedPokedex.map(({ id, name }, index) => (
-          <Grid.Cell
-            key={id}
-            bgColors={bgColors}
-            defaultClickValue={pokemonClickValues[id]}
-            matchesSearch={!searchTerm || name.toLowerCase().includes(searchTerm)}
-            maxHeight="40px"
-            onLeftClick={createLeftClickHandler({ id, index })}
-            onRightClick={handleRightClick}
-            trackClicks={trackClicks}
-          >
+        {orderedPokedex.map(({ id, name }, index) => {
+          let cellContent = (
             <Image
               alt={`${name}`}
               height={40}
@@ -120,9 +119,33 @@ export default function PokedexGrid({ columns, onCellClick, onRandomize, selecte
               src={`/images/pokemon/${id}.png`}
               title={`${name}`}
               width={40}
-              />
-          </Grid.Cell>
-        ))}
+            />
+          );
+          if (hiddenProgressGrid && hiddenValuesGrid) {
+            const ddIndex = convertIndexTo2DIndex(index, columns);
+            if (hiddenProgressGrid[ddIndex.i][ddIndex.j] === 'X') {
+              cellContent = (
+                <p className={cx('hiddenValue')}>
+                  {hiddenValuesGrid[ddIndex.i][ddIndex.j]}
+                </p>
+              )
+            }
+          }
+          return (
+            <Grid.Cell
+              key={id}
+              bgColors={bgColors}
+              defaultClickValue={pokemonClickValues[id]}
+              matchesSearch={!searchTerm || name.toLowerCase().includes(searchTerm)}
+              maxHeight="40px"
+              onLeftClick={createLeftClickHandler({ id, index })}
+              onRightClick={handleRightClick}
+              trackClicks={trackClicks}
+            >
+              {cellContent}
+            </Grid.Cell>
+          );
+        })}
       </Grid>
       {selectedPokeOptions.length > 0 && (
         <div className={cx('pokeOptionsContainer')}>
@@ -188,6 +211,8 @@ export default function PokedexGrid({ columns, onCellClick, onRandomize, selecte
 
 PokedexGrid.propTypes = {
   columns: PropTypes.number,
+  hiddenProgressGrid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string]))),
+  hiddenValuesGrid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string]))),
   onCellClick: PropTypes.func,
   onRandomize: PropTypes.func,
   selectedPokeOptions: PropTypes.arrayOf(PropTypes.shape({
@@ -201,6 +226,8 @@ PokedexGrid.propTypes = {
 
 PokedexGrid.defaultProps = {
   columns: 20,
+  hiddenProgressGrid: undefined,
+  hiddenValuesGrid: undefined,
   onCellClick: noop,
   onRandomize: noop,
   selectedPokeOptions: [],

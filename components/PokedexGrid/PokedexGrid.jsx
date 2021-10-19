@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import short from 'short-uuid';
 import { NATIONAL_DEX } from '../../lib/constants/pokedex';
-import { noop } from '../../lib/utils';
+import { debounce, noop } from '../../lib/utils';
 import { convertIndexTo2DIndex } from '../../lib/utils/arrayConversion';
 import { randomizePokedex } from '../../lib/utils/randomize';
 import Grid from '../Grid';
@@ -73,9 +73,11 @@ export default function PokedexGrid({
     setInputSeed('');
   }, []);
 
+  const updateStateSearchTerm = debounce(value => setSearchTerm(value.toLowerCase()), 200);
+
   const handleSearchChange = useCallback(({ target }) => {
-    setSearchTerm(target.value.toLowerCase());
-  }, []);
+    updateStateSearchTerm(target.value);
+  }, [updateStateSearchTerm]);
 
   const createLeftClickHandler = useCallback(selectedPoke => () => {
     const ddIndex = convertIndexTo2DIndex(selectedPoke.index, columns);
@@ -216,7 +218,6 @@ export default function PokedexGrid({
           maxLength="15"
           onChange={handleSearchChange}
           spellCheck="false"
-          value={searchTerm}
         />
         <br />
         <span className={cx('hintText')}>Press escape to auto-clear</span>

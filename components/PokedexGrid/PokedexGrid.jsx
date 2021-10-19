@@ -40,8 +40,10 @@ export default function PokedexGrid({
     if (inputsAreBlurred && validKeyPressed) {
       searchInputRef.current.focus();
     } else if (keyCode === 27) {
-      setSearchTerm('');
+      searchInputRef.current.value = '';
       searchInputRef.current.blur();
+      seedInputRef.current.blur();
+      setSearchTerm('');
     }
   }, []);
 
@@ -51,9 +53,11 @@ export default function PokedexGrid({
     }
   }, [documentKeyDownListener]);
 
+  const updateStateSeed = debounce(value => setInputSeed(value), 1000);
+
   const handleSeedChange = useCallback(({ target }) => {
-    setInputSeed(target.value);
-  }, []);
+    updateStateSeed(target.value);
+  }, [updateStateSeed]);
 
   const handleRandomize = useCallback((e) => {
     e.preventDefault();
@@ -73,7 +77,7 @@ export default function PokedexGrid({
     setInputSeed('');
   }, []);
 
-  const updateStateSearchTerm = debounce(value => setSearchTerm(value.toLowerCase()), 200);
+  const updateStateSearchTerm = debounce(value => setSearchTerm(value.toLowerCase()), 250);
 
   const handleSearchChange = useCallback(({ target }) => {
     updateStateSearchTerm(target.value);
@@ -198,7 +202,6 @@ export default function PokedexGrid({
           maxLength="22"
           onChange={handleSeedChange}
           spellCheck="false"
-          value={inputSeed}
         />
         <button className={cx('randomizerButton')} onClick={handleRandomize} type="button">
           Randomize

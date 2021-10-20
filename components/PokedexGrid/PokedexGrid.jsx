@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import short from 'short-uuid';
 import { NATIONAL_DEX } from '../../lib/constants/pokedex';
-import { convertIndexTo2DIndex, noop } from '../../lib/utils';
+import { debounce, noop } from '../../lib/utils';
+import { convertIndexTo2DIndex } from '../../lib/utils/arrayConversion';
 import { randomizePokedex } from '../../lib/utils/randomize';
 import Grid from '../Grid';
 import styles from './PokedexGrid.module.css';
@@ -39,8 +40,10 @@ export default function PokedexGrid({
     if (inputsAreBlurred && validKeyPressed) {
       searchInputRef.current.focus();
     } else if (keyCode === 27) {
-      setSearchTerm('');
+      searchInputRef.current.value = '';
       searchInputRef.current.blur();
+      seedInputRef.current.blur();
+      setSearchTerm('');
     }
   }, []);
 
@@ -50,9 +53,11 @@ export default function PokedexGrid({
     }
   }, [documentKeyDownListener]);
 
+  const updateStateSeed = debounce(value => setInputSeed(value), 1000);
+
   const handleSeedChange = useCallback(({ target }) => {
-    setInputSeed(target.value);
-  }, []);
+    updateStateSeed(target.value);
+  }, [updateStateSeed]);
 
   const handleRandomize = useCallback((e) => {
     e.preventDefault();
@@ -72,9 +77,11 @@ export default function PokedexGrid({
     setInputSeed('');
   }, []);
 
+  const updateStateSearchTerm = debounce(value => setSearchTerm(value.toLowerCase()), 250);
+
   const handleSearchChange = useCallback(({ target }) => {
-    setSearchTerm(target.value.toLowerCase());
-  }, []);
+    updateStateSearchTerm(target.value);
+  }, [updateStateSearchTerm]);
 
   const createLeftClickHandler = useCallback(selectedPoke => () => {
     const ddIndex = convertIndexTo2DIndex(selectedPoke.index, columns);
@@ -195,7 +202,6 @@ export default function PokedexGrid({
           maxLength="22"
           onChange={handleSeedChange}
           spellCheck="false"
-          value={inputSeed}
         />
         <button className={cx('randomizerButton')} onClick={handleRandomize} type="button">
           Randomize
@@ -215,7 +221,6 @@ export default function PokedexGrid({
           maxLength="15"
           onChange={handleSearchChange}
           spellCheck="false"
-          value={searchTerm}
         />
         <br />
         <span className={cx('hintText')}>Press escape to auto-clear</span>

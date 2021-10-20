@@ -5,7 +5,7 @@ import Grid from '../../../components/Grid';
 import Layout from '../../../components/Layout';
 import PokedexGrid from '../../../components/PokedexGrid';
 import { NATIONAL_DEX } from '../../../lib/constants/pokedex';
-import { convertTo2DArray } from '../../../lib/utils';
+import { convertTo2DArray } from '../../../lib/utils/arrayConversion';
 import { randomizeArray } from '../../../lib/utils/randomize';
 import styles from './PDMinesweeperPage.module.css';
 

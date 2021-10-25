@@ -42,6 +42,10 @@ export default function HomePage() {
           <a>Minesweeper</a>
         </Link>
         <br />
+        <Link href="/pokedex/boom">
+          <a>Boom</a>
+        </Link>
+        <br />
         <h2>Pokemon Crystal Item Trackers</h2>
         <Link href="/items/crystal/fir">
           <a>Full Item Tracker</a>

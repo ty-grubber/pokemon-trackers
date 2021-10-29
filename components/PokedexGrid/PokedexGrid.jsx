@@ -84,7 +84,7 @@ export default function PokedexGrid({
 
   const createLeftClickHandler = useCallback(selectedPoke => () => {
     const ddIndex = convertIndexTo2DIndex(selectedPoke.index, columns);
-    if (hiddenProgressGrid && hiddenProgressGrid[ddIndex.i][ddIndex.j] !== 'X') {
+    if (hiddenProgressGrid && !['X', 5].includes(hiddenProgressGrid[ddIndex.i][ddIndex.j])) {
       setSelectedPokemon(orderedPokedex.find(poke => poke.id === selectedPoke.id));
       setSelectedGrid(ddIndex)
       onCellClick();
@@ -97,7 +97,7 @@ export default function PokedexGrid({
     onCellClick();
   }, [onCellClick]);
 
-  const createActionClickHandler = useCallback((action, clickValue) => () => {
+  const createActionClickHandler = useCallback((action, clearSelected, clickValue) => () => {
     setPokemonClickValues(existingClickValues => {
       const newClickValues = [...existingClickValues];
       newClickValues[selectedPokemon.id] = clickValue;
@@ -105,6 +105,9 @@ export default function PokedexGrid({
     });
     if (typeof action === 'function') {
       action(selectedGrid, clickValue);
+      if (clearSelected) {
+        setSelectedPokemon(undefined);
+      }
     }
   }, [selectedGrid, selectedPokemon]);
 
@@ -173,11 +176,11 @@ export default function PokedexGrid({
               <span className={cx('inputLabel')}>
                 {selectedPokemon.name} Actions:
               </span>
-              {selectedPokeOptions.map(({action, clickValue, color, text, textColor}) => (
+              {selectedPokeOptions.map(({action, clearSelected, clickValue, color, text, textColor}) => (
                 <button
                   key={text}
                   className={cx('clickOptionButton')}
-                  onClick={createActionClickHandler(action, clickValue)}
+                  onClick={createActionClickHandler(action, clearSelected, clickValue)}
                   style={{ backgroundColor: color, color: `${textColor || 'white'}`}}
                   type='button'
                 >

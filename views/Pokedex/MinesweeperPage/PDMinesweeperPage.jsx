@@ -135,12 +135,12 @@ export default function Minesweeper() {
   }, [mineGrid, progressGrid]);
 
   const selectedPokeOptions = useMemo(() => ([
-    { clickValue: 0, color: 'grey', text: 'Reset', action: updateProgress },
+    { clickValue: 0, color: 'darkgrey', text: 'Reset', action: updateProgress },
     { clickValue: 1, color: 'dodgerblue', text: 'Seen', action: updateProgress },
     { clickValue: 2, color: 'darkgoldenrod', text: 'Caught', action: updateProgress },
     { clickValue: 3, color: 'red', text: 'Flag', action: updateProgress },
-    { clickValue: 4, color: 'white', text: 'Mine', textColor: 'black', action: updateProgress },
-    { clickValue: 5, color: 'black', text: 'Explode', action: updateProgress },
+    { clickValue: 4, color: 'white', text: 'Mine', textColor: 'black', action: updateProgress, clearSelected: true },
+    { clickValue: 5, color: 'black', text: 'Explode', action: updateProgress, clearSelected: true },
   ]), [updateProgress]);
 
   return (

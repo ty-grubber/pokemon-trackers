@@ -52,7 +52,7 @@ export default function BasicTracker() {
       <section>
         <Grid className={cx('trackerGrid')} columns={2}>
           <Grid.Cell className={cx('pokedexContainer')}>
-            <PokedexGrid onCellClick={handleClick} trackClicks />
+            <PokedexGrid defaultClickValue={2} onCellClick={handleClick} trackClicks />
           </Grid.Cell>
           <Grid.Cell className={cx('trackerContainer')}>
             <header className={cx('header')}>

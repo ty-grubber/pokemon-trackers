@@ -67,13 +67,7 @@
 }
 
 .bgPokemonImg {
-  /** Need important to overwrite next image inline styling */
-  height: auto !important;
-  left: 0 !important;
   opacity: 0.4;
-  position: absolute !important;
-  top: 0 !important;
-  width: 100% !important;
 }
 
 .hiddenValue {

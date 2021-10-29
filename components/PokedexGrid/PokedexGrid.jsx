@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import classnames from 'classnames/bind';
-import Image from 'next/image';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import short from 'short-uuid';
@@ -122,10 +121,9 @@ export default function PokedexGrid({
       <Grid className={cx('pokedexGrid')} css={gridStyles} columns={columns}>
         {orderedPokedex.map(({ id, name }, index) => {
           let cellContent = (
-            <Image
+            <img
               alt={name}
               height={40}
-              priority
               src={`/images/pokemon/${id}.png`}
               title={name}
               width={40}
@@ -137,11 +135,10 @@ export default function PokedexGrid({
             if (hiddenProgressGrid[ddIndex.i][ddIndex.j] === 'X') {
               cellContent = (
                 <div className={cx('bgPokemon', { isHiddenMine })}>
-                  <Image
+                  <img
                     alt={name}
                     className={cx('bgPokemonImg')}
                     height={40}
-                    priority
                     src={`/images/pokemon/${id}.png`}
                     title={name}
                     width={40}

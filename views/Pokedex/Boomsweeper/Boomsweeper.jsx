@@ -377,7 +377,7 @@ export default function Boom({
   const newGridModalCreateAction = useCallback(() => {
     const seed = newGridModalSeedInputRef.current.value === '' ? short.generate() : newGridModalSeedInputRef.current.value;
     const layoutType = newGridModalLayoutSelectorRef.current.value
-    let href = '/pokedex/boom?seed=' + seed;
+    let href = '/pokedex/boomsweeper?seed=' + seed;
 
     if (layoutType !== LAYOUT_TYPE.random) {
       href += '&layout=' + layoutType;

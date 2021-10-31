@@ -6,6 +6,7 @@ import React from 'react';
 import Layout from '../../components/Layout';
 import utilStyles from '../../styles/utils.module.css';
 import styles from './HomePage.module.css';
+import short from 'short-uuid';
 
 const ucx = classnames.bind(utilStyles);
 const cx = classnames.bind(styles);
@@ -42,8 +43,8 @@ export default function HomePage() {
           <a>Minesweeper</a>
         </Link>
         <br />
-        <Link href="/pokedex/boom">
-          <a>Boom</a>
+        <Link href={"/pokedex/boomsweeper?seed=" + short.generate()}>
+          <a>Boomsweeper</a>
         </Link>
         <br />
         <h2>Pokemon Crystal Item Trackers</h2>

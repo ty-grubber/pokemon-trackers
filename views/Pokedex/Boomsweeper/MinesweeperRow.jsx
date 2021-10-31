@@ -6,12 +6,19 @@ const cx = classnames.bind(styles);
 
 export default function MinesweeperRow({
   row,
-  onCellClick,
+  cellClickAction,
+  cellRightClickAction,
+  searchTerm,
 }) {
   return <div className={cx('gridRow')}>
     {
       row.map((item) => {
-        return <MinesweeperCell item={item} onCellClick={onCellClick}/>
+        return <MinesweeperCell
+          item={item}
+          clickAction={cellClickAction}
+          rightClickAction={cellRightClickAction}
+          searchTerm={searchTerm}
+        />
       })
     }
   </div>

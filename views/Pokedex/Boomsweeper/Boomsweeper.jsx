@@ -13,7 +13,7 @@ import PrimaryButton from './PrimaryButton';
 import { LAYOUT_TYPE } from '../../../lib/constants/layout';
 import { NATIONAL_DEX } from '../../../lib/constants/pokedex';
 import { convertTo2DArray } from '../../../lib/utils';
-import styles from './Boom.module.css';
+import styles from './Boomsweeper.module.css';
 
 const cx = classnames.bind(styles);
 

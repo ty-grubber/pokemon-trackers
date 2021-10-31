@@ -1,6 +1,6 @@
 import classnames from 'classnames/bind';
 import MinesweeperCell from './MinesweeperCell';
-import styles from './Boom.module.css';
+import styles from './Boomsweeper.module.css';
 
 const cx = classnames.bind(styles);
 

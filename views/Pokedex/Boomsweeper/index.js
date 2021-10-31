@@ -1,1 +1,1 @@
-export { default } from './Boom';
+export { default } from './Boomsweeper';

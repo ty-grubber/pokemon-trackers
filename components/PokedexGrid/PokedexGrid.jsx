@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import classnames from 'classnames/bind';
-import Image from 'next/image';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import short from 'short-uuid';
@@ -15,6 +14,7 @@ const cx = classnames.bind(styles);
 
 export default function PokedexGrid({
   columns,
+  defaultClickValue, // TODO: this should maybe be based off the hiddenProgressGrid instead...
   hiddenProgressGrid,
   hiddenValuesGrid,
   onCellClick,
@@ -23,7 +23,7 @@ export default function PokedexGrid({
   trackClicks,
 }) {
   const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
-  const [pokemonClickValues, setPokemonClickValues] = useState(Array(NATIONAL_DEX.length + 1).fill(0));
+  const [pokemonClickValues, setPokemonClickValues] = useState(Array(NATIONAL_DEX.length + 1).fill(defaultClickValue));
   const [activeSeed, setActiveSeed] = useState('');
   const [inputSeed, setInputSeed] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -83,22 +83,22 @@ export default function PokedexGrid({
     updateStateSearchTerm(target.value);
   }, [updateStateSearchTerm]);
 
-  const createLeftClickHandler = useCallback(selectedPoke => () => {
+  const createLeftClickHandler = useCallback(selectedPoke => (newValue, oldValue) => {
     const ddIndex = convertIndexTo2DIndex(selectedPoke.index, columns);
-    if (hiddenProgressGrid && hiddenProgressGrid[ddIndex.i][ddIndex.j] !== 'X') {
+    if (hiddenProgressGrid && !['X', 5].includes(hiddenProgressGrid[ddIndex.i][ddIndex.j])) {
       setSelectedPokemon(orderedPokedex.find(poke => poke.id === selectedPoke.id));
       setSelectedGrid(ddIndex)
-      onCellClick();
     }
+    onCellClick(newValue, oldValue);
   }, [columns, hiddenProgressGrid, onCellClick, orderedPokedex]);
 
-  const handleRightClick = useCallback(() => {
+  const handleRightClick = useCallback((newValue, oldValue) => {
     setSelectedPokemon(undefined);
     setSelectedGrid(undefined);
-    onCellClick();
+    onCellClick(newValue, oldValue);
   }, [onCellClick]);
 
-  const createActionClickHandler = useCallback((action, clickValue) => () => {
+  const createActionClickHandler = useCallback((action, clearSelected, clickValue) => () => {
     setPokemonClickValues(existingClickValues => {
       const newClickValues = [...existingClickValues];
       newClickValues[selectedPokemon.id] = clickValue;
@@ -106,6 +106,9 @@ export default function PokedexGrid({
     });
     if (typeof action === 'function') {
       action(selectedGrid, clickValue);
+      if (clearSelected) {
+        setSelectedPokemon(undefined);
+      }
     }
   }, [selectedGrid, selectedPokemon]);
 
@@ -114,7 +117,9 @@ export default function PokedexGrid({
 `
 
   const bgColors = useMemo(() => (
-    selectedPokeOptions ? selectedPokeOptions.map(option => option.color) : undefined
+    selectedPokeOptions?.length > 0
+      ? selectedPokeOptions.map(option => option.color)
+      : ['darkgoldenrod', 'dodgerblue', 'white', 'red', 'purple']
   ), [selectedPokeOptions]);
 
   return (
@@ -122,10 +127,9 @@ export default function PokedexGrid({
       <Grid className={cx('pokedexGrid')} css={gridStyles} columns={columns}>
         {orderedPokedex.map(({ id, name }, index) => {
           let cellContent = (
-            <Image
+            <img
               alt={name}
               height={40}
-              priority
               src={`/images/pokemon/${id}.png`}
               title={name}
               width={40}
@@ -137,11 +141,10 @@ export default function PokedexGrid({
             if (hiddenProgressGrid[ddIndex.i][ddIndex.j] === 'X') {
               cellContent = (
                 <div className={cx('bgPokemon', { isHiddenMine })}>
-                  <Image
+                  <img
                     alt={name}
                     className={cx('bgPokemonImg')}
                     height={40}
-                    priority
                     src={`/images/pokemon/${id}.png`}
                     title={name}
                     width={40}
@@ -176,11 +179,11 @@ export default function PokedexGrid({
               <span className={cx('inputLabel')}>
                 {selectedPokemon.name} Actions:
               </span>
-              {selectedPokeOptions.map(({action, clickValue, color, text, textColor}) => (
+              {selectedPokeOptions.map(({action, clearSelected, clickValue, color, text, textColor}) => (
                 <button
                   key={text}
                   className={cx('clickOptionButton')}
-                  onClick={createActionClickHandler(action, clickValue)}
+                  onClick={createActionClickHandler(action, clearSelected, clickValue)}
                   style={{ backgroundColor: color, color: `${textColor || 'white'}`}}
                   type='button'
                 >
@@ -231,6 +234,7 @@ export default function PokedexGrid({
 
 PokedexGrid.propTypes = {
   columns: PropTypes.number,
+  defaultClickValue: PropTypes.number,
   hiddenProgressGrid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string]))),
   hiddenValuesGrid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string]))),
   onCellClick: PropTypes.func,
@@ -246,6 +250,7 @@ PokedexGrid.propTypes = {
 
 PokedexGrid.defaultProps = {
   columns: 20,
+  defaultClickValue: 0,
   hiddenProgressGrid: undefined,
   hiddenValuesGrid: undefined,
   onCellClick: noop,

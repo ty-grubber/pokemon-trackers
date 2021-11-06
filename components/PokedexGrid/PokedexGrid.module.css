@@ -6,6 +6,7 @@
 .randomizerContainer,
 .searchContainer {
   display: inline-block;
+  vertical-align: top;
 }
 
 .clickOptionButton {

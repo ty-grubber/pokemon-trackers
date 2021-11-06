@@ -69,6 +69,14 @@ export default function Minesweeper() {
   const [progressGrid, setProgressGrid] = useState();
   const [tracker, setTracker] = useState(INITIAL_TRACKER);
   const generateMineGrids = useCallback((inputSeed) => {
+    // Reset everything if not given an inputSeed
+    if (!inputSeed) {
+      setProgressGrid();
+      setPokedexMineGrid(defaultGrid);
+      setTracker(INITIAL_TRACKER);
+      return;
+    }
+
     // TODO: change this based on settings (to closest square based on columns)
     const gridLength = DEFAULT_GRID_LENGTH;
     const unshuffledMines = Array(NATIONAL_DEX.length).fill(MINE, 0, NUM_MINES).fill(0, NUM_MINES); // TODO: change 40 based on settings

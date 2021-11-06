@@ -33,7 +33,7 @@ export default function PokedexGrid({
 
   const documentKeyDownListener = useCallback((e) => {
     const keyCode = e.which || e.keyCode;
-    const inputsAreBlurred = document.activeElement !== searchInputRef.current && document.activeElement !== seedInputRef.current;
+    const inputsAreBlurred = document.activeElement.id !== searchInputRef.current.id && document.activeElement.id !== seedInputRef.current.id;
     // valid keys are letters, numbers, dash, apostrophe or period;
     const validKeyPressed = (keyCode >= 48 && keyCode <= 90) || keyCode === 222 || keyCode === 189 || keyCode === 190;
     if (inputsAreBlurred && validKeyPressed) {
@@ -72,6 +72,7 @@ export default function PokedexGrid({
     e.preventDefault();
     setActiveSeed('');
     setInputSeed('');
+    seedInputRef.current.value = '';
     onReset();
   }, [onReset]);
 
@@ -221,6 +222,9 @@ export default function PokedexGrid({
         </button>
         <br />
         <span className={cx('hintText')}>Leave blank for random seed</span>
+        {activeSeed && (
+          <span className={cx('hintText')}>Active Seed: <b>{activeSeed}</b></span>
+        )}
       </div>
       <div className={cx('searchContainer')}>
         <label htmlFor="searchInput" className={cx('inputLabel')}>Grid Search: </label>

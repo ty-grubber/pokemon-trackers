@@ -30,6 +30,12 @@ const MAP_PROGRESS_TO_TRACKER = {
   4: 'mine',
   5: 'explosions',
 };
+const emptyCell = {
+  id: 0,
+  matchesSecretValue: false,
+  name: '',
+  value: 0,
+}
 
 export default function Minesweeper() {
   const defaultGrid = useMemo(() => Array(DEFAULT_GRID_LENGTH).fill({ value: 0 }).map((cell, index) => {
@@ -58,12 +64,7 @@ export default function Minesweeper() {
         value,
       });
     });
-    const combinedGridWithBlanks = combinedPokedexMines.concat(Array(5).fill({
-      id: 0,
-      name: '',
-      matchesSecretValue: false,
-      value: 0,
-    }));
+    const combinedGridWithBlanks = combinedPokedexMines.concat([{ ...emptyCell }, { ...emptyCell }, { ...emptyCell }, { ...emptyCell }, { ...emptyCell }]); // Because otherwise each empty cell object shares values with the rest
     const combinedGrid = convertTo2DArray(combinedGridWithBlanks, COLUMNS); // TODO: change 16 based on settings
     const numRows = combinedGrid.length;
 
@@ -112,7 +113,7 @@ export default function Minesweeper() {
       }
     }
 
-    const initialProgress = Array(gridLength).fill(0, 0, NATIONAL_DEX.length).fill('X', NATIONAL_DEX.length);
+    const initialProgress = Array(gridLength).fill(0, 0, NATIONAL_DEX.length).fill(4, NATIONAL_DEX.length);
     const progressArray = convertTo2DArray(initialProgress, COLUMNS);
 
     setPokedexMineGrid(flatten2DArray(combinedGrid));
@@ -153,7 +154,7 @@ export default function Minesweeper() {
 
     setProgressGrid(existingGrid => {
       const newGrid = existingGrid.slice();
-      newGrid[selectedGrid.i][selectedGrid.j] = progressValue !== 4 ? progressValue : 'X';
+      newGrid[selectedGrid.i][selectedGrid.j] = progressValue;
       return newGrid;
     });
   }, [pokedexMineGrid, progressGrid]);

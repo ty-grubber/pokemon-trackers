@@ -83,7 +83,7 @@ export default function PokedexGrid({
 
   const createLeftClickHandler = useCallback(selectedPoke => (newValue, oldValue) => {
     const ddIndex = convertIndexTo2DIndex(selectedPoke.index, columns);
-    if (hiddenProgressGrid && !['X', 5].includes(hiddenProgressGrid[ddIndex.i][ddIndex.j])) {
+    if (hiddenProgressGrid && ![4, 5].includes(hiddenProgressGrid[ddIndex.i][ddIndex.j])) {
       setSelectedPokemon(pokedex.find(poke => poke.id === selectedPoke.id));
       setSelectedGrid(ddIndex);
     }
@@ -124,6 +124,7 @@ export default function PokedexGrid({
     <>
       <Grid className={cx('pokedexGrid')} css={gridStyles} columns={columns}>
         {pokedex.map(({ id, matchesSecretValue, name, value }, index) => {
+          const ddIndex = convertIndexTo2DIndex(index, columns);
           let cellContent = (
             <img
               alt={name}
@@ -134,8 +135,7 @@ export default function PokedexGrid({
             />
           );
           if (hiddenProgressGrid && typeof value !== 'undefined') {
-            const ddIndex = convertIndexTo2DIndex(index, columns);
-            if (hiddenProgressGrid[ddIndex.i][ddIndex.j] === 'X') {
+            if (hiddenProgressGrid[ddIndex.i][ddIndex.j] === 4) {
               if (id === 0) {
                 cellContent = (
                   <div className={cx('bgPokemon', 'emptyCell')}>
@@ -167,7 +167,7 @@ export default function PokedexGrid({
             <Grid.Cell
               key={id || `Empty ${index}`}
               bgColors={bgColors}
-              defaultClickValue={pokemonClickValues[id]}
+              defaultClickValue={hiddenProgressGrid ? hiddenProgressGrid[ddIndex.i][ddIndex.j] : pokemonClickValues[id]}
               matchesSearch={!searchTerm || name.toLowerCase().includes(searchTerm)}
               maxHeight="40px"
               onLeftClick={createLeftClickHandler({ id, index })}

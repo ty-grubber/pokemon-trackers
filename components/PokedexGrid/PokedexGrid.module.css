@@ -62,8 +62,13 @@
   position: relative;
 }
 
-.bgPokemon.isHiddenMine {
+.bgPokemon.matchesSecretValue {
   background-color: red;
+}
+
+.bgPokemon.emptyCell {
+  height: 40px;
+  width: 40px;
 }
 
 .bgPokemonImg {

@@ -5,6 +5,7 @@ import Grid from '../../../components/Grid';
 import Layout from '../../../components/Layout';
 import PokedexGrid from '../../../components/PokedexGrid';
 import { NATIONAL_DEX } from '../../../lib/constants/pokedex';
+import { randomizePokedex } from '../../../lib/utils/randomize';
 import styles from './BasicTrackerPage.module.css';
 
 const cx = classnames.bind(styles);
@@ -19,6 +20,7 @@ const DEFAULT_TRACKED_VALUES = {
 
 export default function BasicTracker() {
   const [clickedValues, setClickedValues] = useState(DEFAULT_TRACKED_VALUES);
+  const [pokedexGrid, setPokedexGrid] = useState(NATIONAL_DEX);
 
   const handleClick = useCallback((newValue, oldValue) => {
     const test = {
@@ -34,6 +36,14 @@ export default function BasicTracker() {
       }));
     }
   }, [clickedValues]);
+
+  const handleRandomize = useCallback(seed => {
+    setPokedexGrid(randomizePokedex(seed))
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setPokedexGrid(NATIONAL_DEX);
+  }, []);
 
   const caughtCount = clickedValues[3] + clickedValues[4];
   const trackedCount = clickedValues[0] + clickedValues[1];
@@ -52,7 +62,14 @@ export default function BasicTracker() {
       <section>
         <Grid className={cx('trackerGrid')} columns={2}>
           <Grid.Cell className={cx('pokedexContainer')}>
-            <PokedexGrid defaultClickValue={2} onCellClick={handleClick} trackClicks />
+            <PokedexGrid
+              defaultClickValue={2}
+              onCellClick={handleClick}
+              onRandomize={handleRandomize}
+              onReset={handleReset}
+              pokedex={pokedexGrid}
+              trackClicks
+            />
           </Grid.Cell>
           <Grid.Cell className={cx('trackerContainer')}>
             <header className={cx('header')}>

@@ -6,7 +6,6 @@ import short from 'short-uuid';
 import { NATIONAL_DEX } from '../../lib/constants/pokedex';
 import { debounce, noop } from '../../lib/utils';
 import { convertIndexTo2DIndex } from '../../lib/utils/arrayConversion';
-import { randomizePokedex } from '../../lib/utils/randomize';
 import Grid from '../Grid';
 import styles from './PokedexGrid.module.css';
 
@@ -16,13 +15,13 @@ export default function PokedexGrid({
   columns,
   defaultClickValue, // TODO: this should maybe be based off the hiddenProgressGrid instead...
   hiddenProgressGrid,
-  hiddenValuesGrid,
   onCellClick,
   onRandomize,
+  onReset,
+  pokedex,
   selectedPokeOptions,
   trackClicks,
 }) {
-  const [orderedPokedex, setOrderedPokedex] = useState(NATIONAL_DEX);
   const [pokemonClickValues, setPokemonClickValues] = useState(Array(NATIONAL_DEX.length + 1).fill(defaultClickValue));
   const [activeSeed, setActiveSeed] = useState('');
   const [inputSeed, setInputSeed] = useState('');
@@ -63,7 +62,6 @@ export default function PokedexGrid({
     e.preventDefault();
     const checkSeed = inputSeed || short.generate();
     if (checkSeed !== activeSeed) {
-      setOrderedPokedex(randomizePokedex(checkSeed));
       setActiveSeed(checkSeed);
       setInputSeed(checkSeed);
       onRandomize(checkSeed);
@@ -72,10 +70,10 @@ export default function PokedexGrid({
 
   const handleReset = useCallback((e) => {
     e.preventDefault();
-    setOrderedPokedex(NATIONAL_DEX);
     setActiveSeed('');
     setInputSeed('');
-  }, []);
+    onReset();
+  }, [onReset]);
 
   const updateStateSearchTerm = debounce(value => setSearchTerm(value.toLowerCase()), 250);
 
@@ -86,11 +84,11 @@ export default function PokedexGrid({
   const createLeftClickHandler = useCallback(selectedPoke => (newValue, oldValue) => {
     const ddIndex = convertIndexTo2DIndex(selectedPoke.index, columns);
     if (hiddenProgressGrid && !['X', 5].includes(hiddenProgressGrid[ddIndex.i][ddIndex.j])) {
-      setSelectedPokemon(orderedPokedex.find(poke => poke.id === selectedPoke.id));
-      setSelectedGrid(ddIndex)
+      setSelectedPokemon(pokedex.find(poke => poke.id === selectedPoke.id));
+      setSelectedGrid(ddIndex);
     }
     onCellClick(newValue, oldValue);
-  }, [columns, hiddenProgressGrid, onCellClick, orderedPokedex]);
+  }, [columns, hiddenProgressGrid, onCellClick, pokedex]);
 
   const handleRightClick = useCallback((newValue, oldValue) => {
     setSelectedPokemon(undefined);
@@ -117,7 +115,7 @@ export default function PokedexGrid({
 `
 
   const bgColors = useMemo(() => (
-    selectedPokeOptions?.length > 0
+    selectedPokeOptions && selectedPokeOptions.length > 0
       ? selectedPokeOptions.map(option => option.color)
       : ['darkgoldenrod', 'dodgerblue', 'white', 'red', 'purple']
   ), [selectedPokeOptions]);
@@ -125,7 +123,7 @@ export default function PokedexGrid({
   return (
     <>
       <Grid className={cx('pokedexGrid')} css={gridStyles} columns={columns}>
-        {orderedPokedex.map(({ id, name }, index) => {
+        {pokedex.map(({ id, matchesSecretValue, name, value }, index) => {
           let cellContent = (
             <img
               alt={name}
@@ -135,30 +133,39 @@ export default function PokedexGrid({
               width={40}
             />
           );
-          if (hiddenProgressGrid && hiddenValuesGrid) {
+          if (hiddenProgressGrid && typeof value !== 'undefined') {
             const ddIndex = convertIndexTo2DIndex(index, columns);
-            const isHiddenMine = typeof hiddenValuesGrid[ddIndex.i][ddIndex.j] !== 'number';
             if (hiddenProgressGrid[ddIndex.i][ddIndex.j] === 'X') {
-              cellContent = (
-                <div className={cx('bgPokemon', { isHiddenMine })}>
-                  <img
-                    alt={name}
-                    className={cx('bgPokemonImg')}
-                    height={40}
-                    src={`/images/pokemon/${id}.png`}
-                    title={name}
-                    width={40}
-                  />
-                  <p className={cx('hiddenValue')} title={name}>
-                    {hiddenValuesGrid[ddIndex.i][ddIndex.j]}
-                  </p>
-                </div>
-              )
+              if (id === 0) {
+                cellContent = (
+                  <div className={cx('bgPokemon', 'emptyCell')}>
+                    <p className={cx('hiddenValue')} title="Empty spot">
+                      {value}
+                    </p>
+                  </div>
+                );
+              } else {
+                cellContent = (
+                  <div className={cx('bgPokemon', { matchesSecretValue })}>
+                    <img
+                      alt={name}
+                      className={cx('bgPokemonImg')}
+                      height={40}
+                      src={`/images/pokemon/${id}.png`}
+                      title={name}
+                      width={40}
+                    />
+                    <p className={cx('hiddenValue')} title={name}>
+                      {value}
+                    </p>
+                  </div>
+                );
+              }
             }
           }
           return (
             <Grid.Cell
-              key={id}
+              key={id || `Empty ${index}`}
               bgColors={bgColors}
               defaultClickValue={pokemonClickValues[id]}
               matchesSearch={!searchTerm || name.toLowerCase().includes(searchTerm)}
@@ -172,7 +179,7 @@ export default function PokedexGrid({
           );
         })}
       </Grid>
-      {selectedPokeOptions.length > 0 && (
+      {!!selectedPokeOptions && selectedPokeOptions.length > 0 && (
         <div className={cx('pokeOptionsContainer')}>
           {selectedPokemon ? (
             <>
@@ -236,9 +243,16 @@ PokedexGrid.propTypes = {
   columns: PropTypes.number,
   defaultClickValue: PropTypes.number,
   hiddenProgressGrid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string]))),
-  hiddenValuesGrid: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.number, PropTypes.string]))),
   onCellClick: PropTypes.func,
   onRandomize: PropTypes.func,
+  onReset: PropTypes.func,
+  pokedex: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    // Used to trigger a background change on the grid cell to indicate grid has special value
+    matchesSecretValue: PropTypes.bool,
+    name: PropTypes.string,
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  })),
   selectedPokeOptions: PropTypes.arrayOf(PropTypes.shape({
     clickValue: PropTypes.number.isRequired,
     color: PropTypes.string,
@@ -252,9 +266,10 @@ PokedexGrid.defaultProps = {
   columns: 20,
   defaultClickValue: 0,
   hiddenProgressGrid: undefined,
-  hiddenValuesGrid: undefined,
   onCellClick: noop,
   onRandomize: noop,
-  selectedPokeOptions: [],
+  onReset: noop,
+  pokedex: NATIONAL_DEX,
+  selectedPokeOptions: undefined,
   trackClicks: false,
 }

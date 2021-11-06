@@ -5,16 +5,17 @@ import Grid from '../../../components/Grid';
 import Layout from '../../../components/Layout';
 import PokedexGrid from '../../../components/PokedexGrid';
 import { NATIONAL_DEX } from '../../../lib/constants/pokedex';
-import { convertTo2DArray } from '../../../lib/utils/arrayConversion';
-import { randomizeArray } from '../../../lib/utils/randomize';
+import { convert2DIndexToIndex, convertTo2DArray, flatten2DArray } from '../../../lib/utils/arrayConversion';
+import { randomizeArray, randomizePokedex } from '../../../lib/utils/randomize';
 import styles from './PDMinesweeperPage.module.css';
 
 const cx = classnames.bind(styles);
+const DEFAULT_GRID_LENGTH = NATIONAL_DEX.length + 5;
 const MINE = 	'💥';
 const COLUMNS = 16;
 const NUM_MINES = 40;
 const INITIAL_TRACKER = {
-  reset: NATIONAL_DEX.length + 5,
+  reset: DEFAULT_GRID_LENGTH,
   seen: 0,
   caught: 0,
   flagged: 0,
@@ -31,74 +32,97 @@ const MAP_PROGRESS_TO_TRACKER = {
 };
 
 export default function Minesweeper() {
-  const [mineGrid, setMineGrid] = useState();
+  const defaultGrid = useMemo(() => Array(DEFAULT_GRID_LENGTH).fill({ value: 0 }).map((cell, index) => {
+    const pokeInfo = NATIONAL_DEX[index] || { id: 0, name: '' };
+    return ({
+      ...cell,
+      ...pokeInfo,
+    });
+  }), []);
+
+  const [pokedexMineGrid, setPokedexMineGrid] = useState(defaultGrid);
   const [progressGrid, setProgressGrid] = useState();
   const [tracker, setTracker] = useState(INITIAL_TRACKER);
   const generateMineGrids = useCallback((inputSeed) => {
-    // TODO: change the +5 based on settings (to closest square based on columns)
-    const gridLength = NATIONAL_DEX.length + 5;
-    const unshuffledMines = Array(gridLength).fill(MINE, 0, NUM_MINES).fill(0, NUM_MINES); // TODO: change 40 based on settings
+    // TODO: change this based on settings (to closest square based on columns)
+    const gridLength = DEFAULT_GRID_LENGTH;
+    const unshuffledMines = Array(NATIONAL_DEX.length).fill(MINE, 0, NUM_MINES).fill(0, NUM_MINES); // TODO: change 40 based on settings
 
-    const shuffledMines = randomizeArray(unshuffledMines, inputSeed); // TODO: change seed based on settings
-    const shuffledMineGrid = convertTo2DArray(shuffledMines, COLUMNS); // TODO: change 16 based on settings
-    const numRows = shuffledMineGrid.length;
-    const numCols = 16; // replace with cols from state when implemented
+    const shuffledMines = randomizeArray(unshuffledMines, inputSeed);
+    const shuffledPokedex = randomizePokedex(inputSeed);
+    const combinedPokedexMines = shuffledMines.map((value, index) => {
+      const pokeInfo = shuffledPokedex[index] || { id: index + 1, name: '' };
+      return ({
+        ...pokeInfo,
+        matchesSecretValue: value === MINE,
+        value,
+      });
+    });
+    const combinedGridWithBlanks = combinedPokedexMines.concat(Array(5).fill({
+      id: 0,
+      name: '',
+      matchesSecretValue: false,
+      value: 0,
+    }));
+    const combinedGrid = convertTo2DArray(combinedGridWithBlanks, COLUMNS); // TODO: change 16 based on settings
+    const numRows = combinedGrid.length;
 
     // Iterate through mineGrid to put proper adjacent mine numbers in the array
     for (var i = 0; i < numRows; i++) {
-      for (var j = 0; j < numCols; j++) {
+      for (var j = 0; j < COLUMNS; j++) {
         // if grid coord is a mine, add 1 to all non-mine adjacent grid coords
-        if (shuffledMineGrid[i][j] === MINE) {
+        if (combinedGrid[i][j].matchesSecretValue) {
           const isNotLeftEdgeCol = j - 1 >= 0;
-          const isNotRightEdgeCol = j + 1 < numCols;
+          const isNotRightEdgeCol = j + 1 < COLUMNS;
 
           // Current Row
-          if (isNotLeftEdgeCol && shuffledMineGrid[i][j - 1] !== MINE) {
-            shuffledMineGrid[i][j - 1] += 1;
+          if (isNotLeftEdgeCol && !combinedGrid[i][j - 1].matchesSecretValue) {
+            combinedGrid[i][j - 1].value += 1;
           }
-          if (isNotRightEdgeCol && shuffledMineGrid[i][j + 1] !== MINE) {
-            shuffledMineGrid[i][j + 1] += 1;
+          if (isNotRightEdgeCol && !combinedGrid[i][j + 1].matchesSecretValue) {
+            combinedGrid[i][j + 1].value += 1;
           }
 
           if (i - 1 >= 0) {
             // Previous row exists, so check through valid columns
-            if (shuffledMineGrid[i - 1][j] !== MINE) {
-              shuffledMineGrid[i - 1][j] += 1;
+            if (!combinedGrid[i - 1][j].matchesSecretValue) {
+              combinedGrid[i - 1][j].value += 1;
             }
-            if (isNotLeftEdgeCol && shuffledMineGrid[i - 1][j - 1] !== MINE) {
-              shuffledMineGrid[i - 1][j - 1] += 1;
+            if (isNotLeftEdgeCol && !combinedGrid[i - 1][j - 1].matchesSecretValue) {
+              combinedGrid[i - 1][j - 1].value += 1;
             }
-            if (isNotRightEdgeCol && shuffledMineGrid[i - 1][j + 1] !== MINE) {
-              shuffledMineGrid[i - 1][j + 1] += 1;
+            if (isNotRightEdgeCol && !combinedGrid[i - 1][j + 1].matchesSecretValue) {
+              combinedGrid[i - 1][j + 1].value += 1;
             }
           }
 
           if (i + 1 < numRows) {
             // Next row exists, so check through valid columns
-            if (shuffledMineGrid[i + 1][j] !== MINE) {
-              shuffledMineGrid[i + 1][j] += 1;
+            if (!combinedGrid[i + 1][j].matchesSecretValue) {
+              combinedGrid[i + 1][j].value += 1;
             }
-            if (isNotLeftEdgeCol && shuffledMineGrid[i + 1][j - 1] !== MINE) {
-              shuffledMineGrid[i + 1][j - 1] += 1;
+            if (isNotLeftEdgeCol && !combinedGrid[i + 1][j - 1].matchesSecretValue) {
+              combinedGrid[i + 1][j - 1].value += 1;
             }
-            if (isNotRightEdgeCol && shuffledMineGrid[i + 1][j + 1] !== MINE) {
-              shuffledMineGrid[i + 1][j + 1] += 1;
+            if (isNotRightEdgeCol && !combinedGrid[i + 1][j + 1].matchesSecretValue) {
+              combinedGrid[i + 1][j + 1].value += 1;
             }
           }
         }
       }
     }
 
-    const initialProgress = Array(gridLength).fill(0);
+    const initialProgress = Array(gridLength).fill(0, 0, NATIONAL_DEX.length).fill('X', NATIONAL_DEX.length);
     const progressArray = convertTo2DArray(initialProgress, COLUMNS);
 
-    setMineGrid(shuffledMineGrid);
+    setPokedexMineGrid(flatten2DArray(combinedGrid));
     setProgressGrid(progressArray);
   }, []);
 
   const updateProgress = useCallback((selectedGrid, progressValue) => {
-    const isMineExposed = progressValue === 4 && mineGrid[selectedGrid.i][selectedGrid.j] === MINE;
-    const trackerToDecrease = MAP_PROGRESS_TO_TRACKER[progressGrid[selectedGrid.i][selectedGrid.j]];
+    const selectedIndex = convert2DIndexToIndex(selectedGrid, COLUMNS);
+    const isMineExposed = progressValue === 4 && pokedexMineGrid[selectedIndex].matchesSecretValue;
+    const trackerToDecrease = MAP_PROGRESS_TO_TRACKER[progressGrid[selectedIndex]];
     const trackerToIncrease = MAP_PROGRESS_TO_TRACKER[progressValue];
 
     if (!isMineExposed) {
@@ -132,7 +156,7 @@ export default function Minesweeper() {
       newGrid[selectedGrid.i][selectedGrid.j] = progressValue !== 4 ? progressValue : 'X';
       return newGrid;
     });
-  }, [mineGrid, progressGrid]);
+  }, [pokedexMineGrid, progressGrid]);
 
   const selectedPokeOptions = useMemo(() => ([
     { clickValue: 0, color: 'darkgrey', text: 'Reset', action: updateProgress },
@@ -163,8 +187,9 @@ export default function Minesweeper() {
             <PokedexGrid
               columns={16}
               hiddenProgressGrid={progressGrid}
-              hiddenValuesGrid={mineGrid}
               onRandomize={generateMineGrids}
+              onReset={generateMineGrids}
+              pokedex={pokedexMineGrid}
               selectedPokeOptions={selectedPokeOptions}
             />
           </Grid.Cell>

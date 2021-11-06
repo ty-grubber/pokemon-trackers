@@ -37,6 +37,25 @@ const emptyCell = {
   value: 0,
 }
 
+function autoMine(progressArr, mineArr, rowIndex, colIndex) {
+  if (progressArr && progressArr[rowIndex] && progressArr[rowIndex][colIndex] < 4) {
+    // Need to mine current square
+    progressArr[rowIndex][colIndex] = 4;
+
+    // Check if we need to mine around it
+    if (mineArr[rowIndex][colIndex].value === 0) {
+      autoMine(progressArr, mineArr, rowIndex - 1, colIndex);
+      autoMine(progressArr, mineArr, rowIndex - 1, colIndex - 1);
+      autoMine(progressArr, mineArr, rowIndex - 1, colIndex + 1);
+      autoMine(progressArr, mineArr, rowIndex, colIndex - 1);
+      autoMine(progressArr, mineArr, rowIndex, colIndex + 1);
+      autoMine(progressArr, mineArr, rowIndex + 1, colIndex);
+      autoMine(progressArr, mineArr, rowIndex + 1, colIndex - 1);
+      autoMine(progressArr, mineArr, rowIndex + 1, colIndex + 1);
+    }
+  }
+}
+
 export default function Minesweeper() {
   const defaultGrid = useMemo(() => Array(DEFAULT_GRID_LENGTH).fill({ value: 0 }).map((cell, index) => {
     const pokeInfo = NATIONAL_DEX[index] || { id: 0, name: '' };
@@ -113,8 +132,15 @@ export default function Minesweeper() {
       }
     }
 
-    const initialProgress = Array(gridLength).fill(0, 0, NATIONAL_DEX.length).fill(4, NATIONAL_DEX.length);
+    const initialProgress = Array(gridLength).fill(0);
     const progressArray = convertTo2DArray(initialProgress, COLUMNS);
+
+    // Here we auto-mine any 0s from the cells we know are safe (the last 5)
+    autoMine(progressArray, combinedGrid, numRows - 1, COLUMNS - 1);
+    autoMine(progressArray, combinedGrid, numRows - 1, COLUMNS - 2);
+    autoMine(progressArray, combinedGrid, numRows - 1, COLUMNS - 3);
+    autoMine(progressArray, combinedGrid, numRows - 1, COLUMNS - 4);
+    autoMine(progressArray, combinedGrid, numRows - 1, COLUMNS - 5);
 
     setPokedexMineGrid(flatten2DArray(combinedGrid));
     setProgressGrid(progressArray);

@@ -179,8 +179,13 @@ export default function Minesweeper() {
     }
 
     setProgressGrid(existingGrid => {
+      const pokedexGrid2d = convertTo2DArray(pokedexMineGrid, COLUMNS);
       const newGrid = existingGrid.slice();
-      newGrid[selectedGrid.i][selectedGrid.j] = progressValue;
+      if (progressValue === 4) {
+        autoMine(newGrid, pokedexGrid2d, selectedGrid.i, selectedGrid.j);
+      } else {
+        newGrid[selectedGrid.i][selectedGrid.j] = progressValue;
+      }
       return newGrid;
     });
   }, [pokedexMineGrid, progressGrid]);

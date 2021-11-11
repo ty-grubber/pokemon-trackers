@@ -7,18 +7,12 @@ export default function BoomsweeperPage() {
   const router = useRouter();
 
   const seed = router.query.seed ?? ''
-  let layout = router.query.layout;
-
-  if (
-    layout !== LAYOUT_TYPE.numerical &&
-    layout !== LAYOUT_TYPE.alphabetical &&
-    layout !== LAYOUT_TYPE.random
-  ) {
-    layout = LAYOUT_TYPE.random;
-  }
+  const layoutType = Object.values(LAYOUT_TYPE).find((layout) => {
+    return layout.id === router.query.layout;
+  }) ?? LAYOUT_TYPE.random;
 
   return <Boomsweeper
     seed={seed}
-    layoutType={layout}
+    layoutType={layoutType}
   />
 }

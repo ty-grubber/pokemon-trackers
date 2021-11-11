@@ -245,7 +245,7 @@ export default function Boom({
   layoutType,
 }) {
   const [grid, setGrid] = useState([]);
-  const [currentClickAction, setCurrentClickAction] = useState();
+  const [currentClickAction, setCurrentClickAction] = useState({});
   const [searchTerm, setSearchTerm] = useState();
   const [isShowingNewGridModal, setIsShowingNewGridModal] = useState();
 
@@ -272,14 +272,6 @@ export default function Boom({
     setSearchTerm('');
     setGrid(performActionOnItem(grid, item, ACTION.flag));
   };
-
-  const pokemonLayoutName = (() => {
-    switch (layoutType) {
-      case LAYOUT_TYPE.numerical: return 'Numerical';
-      case LAYOUT_TYPE.alphabetical: return 'Alphabetical';
-      case LAYOUT_TYPE.random: return 'Randomized';
-    }
-  })();
 
   const copyLinkAction = useCallback(() => {
     navigator.clipboard.writeText(window.location);
@@ -438,8 +430,8 @@ export default function Boom({
                 selectableActions.map((action) => {
                   return <ActionSelectionButton
                     action={action}
-                    currentAction={currentClickAction}
-                    clickAction={() => { setCurrentClickAction(action); }}
+                    isSelected={action.id === currentClickAction.id}
+                    onClickHandler={() => { setCurrentClickAction(action); }}
                   />
                 })
               }
@@ -524,7 +516,7 @@ export default function Boom({
             <table>
               <div>
                 <div>Pokémon Layout:</div>
-                <div>{pokemonLayoutName}</div>
+                <div>{layoutType.name}</div>
               </div>
               <div>
                 <div>Seed:</div>

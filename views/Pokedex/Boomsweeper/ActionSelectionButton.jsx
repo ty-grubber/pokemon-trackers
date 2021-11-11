@@ -1,43 +1,53 @@
 export const ACTION = {
-  mark_as_safe: "mark_as_safe",
-  mark_as_seen: "mark_as_seen",
-  mark_as_caught: "mark_as_caught",
-  flag: "flag",
-  reveal: "reveal",
-  explode: "explode",
-  reset: "reset",
+  mark_as_safe: {
+    id: 'mark_as_safe',
+    title: 'Mark As Safe',
+    backgroundColor: '#AA88EE99',
+    selectedBackgroundColor: '#7755EE',
+  },
+  mark_as_seen: {
+    id: 'mark_as_seen',
+    title: 'Mark As Seen',
+    backgroundColor: '#88AAEE99',
+    selectedBackgroundColor: '#5577EE',
+  },
+  mark_as_caught: {
+    id: 'mark_as_caught',
+    title: 'Mark As Caught',
+    backgroundColor: '#22AA0099',
+    selectedBackgroundColor: '#007700',
+  },
+  flag: {
+    id: 'flag',
+    title: 'Flag',
+    backgroundColor: '#AA88EE99',
+    selectedBackgroundColor: '#7755EE',
+  },
+  reveal: {
+    id: 'reveal',
+    title: 'Reveal',
+    backgroundColor: '#99999999',
+    selectedBackgroundColor: '#666666',
+  },
+  explode: {
+    id: 'explode',
+    title: 'Explode',
+    backgroundColor: '#EE666699',
+    selectedBackgroundColor: '#EE3333',
+  },
+  reset: {
+    id: 'reset',
+    title: 'Reset',
+    backgroundColor: '#33333399',
+    selectedBackgroundColor: '#111111',
+  },
 };
 
 export default function ActionSelectionButton({
   action,
-  currentAction,
-  clickAction,
+  isSelected,
+  onClickHandler,
 }) {
-  const isSelected = action === currentAction;
-
-  const title = (() => {
-    switch (action) {
-      case ACTION.mark_as_safe: return "Mark As Safe";
-      case ACTION.mark_as_seen: return "Mark As Seen";
-      case ACTION.mark_as_caught: return "Mark As Caught";
-      case ACTION.flag: return "Flag";
-      case ACTION.reveal: return "Reveal";
-      case ACTION.explode: return "Explode";
-      case ACTION.reset: return "Reset";
-    }
-  })();
-
-  const backgroundColor = (() => {
-    switch (action) {
-      case ACTION.mark_as_safe: return isSelected ? '#7755EE' : '#AA88EE99';
-      case ACTION.mark_as_seen: return isSelected ? '#5577EE' : '#88AAEE99';
-      case ACTION.mark_as_caught: return isSelected ? '#007700' : '#22AA0099';
-      case ACTION.reveal: return isSelected ? '#666666' : '#99999999';
-      case ACTION.explode: return isSelected ? '#EE3333' : '#EE666699';
-      case ACTION.reset: return isSelected ? '#111111' : '#33333399';
-    }
-  })();
-
   return <div
     style={{
       width: '135px',
@@ -52,7 +62,7 @@ export default function ActionSelectionButton({
     <div
       style={{
         boxShadow: isSelected ? 'inset 3px 3px 3px #00000050' : '',
-        backgroundColor: backgroundColor,
+        backgroundColor: isSelected ? action.selectedBackgroundColor : action.backgroundColor,
         border: isSelected ? '1px solid black' : '',
         borderRadius: '5px',
         color: 'white',
@@ -63,9 +73,9 @@ export default function ActionSelectionButton({
         fontWeight: 'bold',
         margin: '5px',
       }}
-      onClick={() => { clickAction(action); }}
+      onClick={() => { onClickHandler(action); }}
     >
-      {title}
+      {action.title}
     </div>
   </div>
 }

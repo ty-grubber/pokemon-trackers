@@ -134,11 +134,12 @@ export default function MinesweeperCell({
       <img
         style={{
           opacity: imageOpacity,
-          maxWidth: '50px',
-          maxHeight: '50px',
+          width: '50px',
+          height: '50px',
+          padding: '2.5px',
         }}
         alt={item.name}
-        src={`/images/pokemon/${item.number}.png`}
+        src={`/images/pokemon/gen2/${item.number}.png`}
       />
       {numberOfAdjacentMinesElement}
       {dexStateElement}

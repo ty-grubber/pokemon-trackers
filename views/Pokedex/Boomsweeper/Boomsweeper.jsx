@@ -523,7 +523,7 @@ export default function Boom({
                 <div>{seed}</div>
               </div>
             </table>
-            <div
+            <footer
               style={{
                 display: 'flex',
                 justifyContent: 'space-around',
@@ -539,7 +539,7 @@ export default function Boom({
                 title={'New Grid'}
                 onClick={showNewGridModalAction}
               />
-            </div>
+            </footer>
           </section>
           <section className={cx('sidebarSection')}>
             <header className={cx('header')}>

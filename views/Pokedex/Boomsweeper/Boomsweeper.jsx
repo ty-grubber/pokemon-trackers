@@ -368,11 +368,11 @@ export default function Boom({
 
   const newGridModalCreateAction = useCallback(() => {
     const seed = newGridModalSeedInputRef.current.value === '' ? short.generate() : newGridModalSeedInputRef.current.value;
-    const layoutType = newGridModalLayoutSelectorRef.current.value
+    const layoutTypeId = newGridModalLayoutSelectorRef.current.value
     let href = '/pokedex/boomsweeper?seed=' + seed;
 
-    if (layoutType !== LAYOUT_TYPE.random) {
-      href += '&layout=' + layoutType;
+    if (layoutTypeId !== LAYOUT_TYPE.random.id) {
+      href += '&layout=' + layoutTypeId;
     }
 
     router.push(href);
@@ -613,9 +613,9 @@ export default function Boom({
             <th>Pokémon Grid Layout: </th>
             <td>
               <select name="layoutType" id="layoutType" ref={newGridModalLayoutSelectorRef}>
-                <option value={LAYOUT_TYPE.random}>Randomized</option>
-                <option value={LAYOUT_TYPE.numerical}>Numerical</option>
-                <option value={LAYOUT_TYPE.alphabetical}>Alphabetical</option>
+                <option value={LAYOUT_TYPE.random.id}>Randomized</option>
+                <option value={LAYOUT_TYPE.numerical.id}>Numerical</option>
+                <option value={LAYOUT_TYPE.alphabetical.id}>Alphabetical</option>
               </select>
             </td>
           </tr>

@@ -45,10 +45,10 @@ function generateGrid(seed, inputPokemon, layoutType, numberOfColumns, numberOfM
   const randomNumberGenerator = seedrandom(seed);
 
   const pokemon = (() => {
-    switch (layoutType) {
-      case LAYOUT_TYPE.random: return randomizeArray(inputPokemon, randomNumberGenerator);
-      case LAYOUT_TYPE.alphabetical: return inputPokemon.sort((a, b) => a.name > b.name);
-      case LAYOUT_TYPE.numerical: return inputPokemon.sort((a, b) => a.number < b.number);
+    switch (layoutType.id) {
+      case LAYOUT_TYPE.random.id: return randomizeArray(inputPokemon, randomNumberGenerator);
+      case LAYOUT_TYPE.alphabetical.id: return [...inputPokemon].sort((a, b) => a.name > b.name);
+      case LAYOUT_TYPE.numerical.id: return [...inputPokemon].sort((a, b) => a.id > b.id);
     }
   })();
 

@@ -158,11 +158,10 @@ function performActionOnItem(grid, item, action) {
 
     case ACTION.reveal:
       if (
-        newItem.dexState === DEX_STATE.caught && (
-          newItem.mineState === MINE_STATE.default ||
-          newItem.mineState === MINE_STATE.marked_as_safe
-        )
+        newItem.mineState === MINE_STATE.default ||
+        newItem.mineState === MINE_STATE.marked_as_safe
       ) {
+        newItem.dexState = DEX_STATE.caught;
         reveal(clone, row, column, false, true);
       }
 
